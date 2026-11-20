@@ -1,0 +1,2138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Color Lab – Exploring Color Theory &amp; Psychology</title>
+<meta name="description" content="Media pembelajaran interaktif 3D/AR + GenAI untuk mengeksplorasi roda warna, harmoni, kontras, dan psikologi warna.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,500;0,600;0,700;0,800;1,600&display=swap" rel="stylesheet">
+<style>
+
+:root{
+  --bg:#fff8ec; --card:#ffffff; --ink:#151515; --muted:#5f5a52; --soft:#f4ecdf;
+  --red:#ff4757; --blue:#2e6bff; --yellow:#ffbe0b; --purple:#8b5cf6; --green:#10b981; --pink:#ff8fab;
+  --ok:#0f9d6b; --ok-soft:#d9f7ea; --bad:#e23b2e; --bad-soft:#ffe1dc;
+  --bd:2.5px solid var(--ink); --sh:4px 4px 0 var(--ink); --sh-sm:3px 3px 0 var(--ink);
+  --hdr:68px; --r:20px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%}
+body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit;cursor:pointer}
+h1,h2,h3{margin:0;line-height:1.12;letter-spacing:-.02em}
+code{background:var(--soft);padding:1px 6px;border-radius:6px;font-size:.9em}
+.mono{font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+
+/* ---------- header ---------- */
+header.top{position:sticky;top:0;z-index:30;min-height:var(--hdr);display:flex;align-items:center;gap:16px;padding:0 18px;background:#fff;border-bottom:var(--bd)}
+.brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-align:left;min-width:0}
+.logo{width:40px;height:40px;flex:none}
+.brand b{display:block;font-size:16px;font-weight:800;letter-spacing:-.02em;white-space:nowrap}
+.brand small{display:block;color:var(--muted);font-size:11.5px;font-weight:600;white-space:nowrap}
+.steps{display:flex;gap:6px;margin:0 auto;padding:0;list-style:none;align-items:center}
+.step{white-space:nowrap;display:flex;align-items:center;gap:7px;border:2px solid transparent;background:none;border-radius:999px;padding:4px 12px 4px 4px;font-size:13px;font-weight:700;color:var(--muted);transition:.15s}
+.step:hover{background:var(--soft)}
+.step[aria-current="true"]{background:var(--ink);color:#fff}
+.ring{--p:0;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--red) calc(var(--p)*1%),#e6dccb 0);flex:none}
+.ring span{width:21px;height:21px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:11.5px;font-weight:800;color:var(--ink)}
+.ring.full{background:var(--green)}
+.ring.full span{background:var(--green);color:#fff}
+.navar{display:inline-flex;align-items:center;gap:6px;background:var(--purple);color:#fff;border:var(--bd);box-shadow:var(--sh-sm);border-radius:999px;padding:6px 14px;font-weight:800;font-size:13px;white-space:nowrap}
+.navar:active{transform:translate(3px,3px);box-shadow:none}
+.navar[aria-current="true"]{background:var(--ink)}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--ink);border-radius:999px;padding:4px 11px;font-size:12px;font-weight:700;background:#fff;white-space:nowrap}
+.chip .dot{width:8px;height:8px;border-radius:50%;background:#bbb}
+.chip.ai-on .dot{background:var(--green);box-shadow:0 0 0 3px var(--ok-soft)}
+.chip.ai-sim .dot{background:var(--yellow)}
+.overall{position:absolute;left:0;bottom:-2.5px;height:4px;background:linear-gradient(90deg,var(--red),var(--yellow),var(--blue),var(--purple),var(--green));transition:width .5s;width:0}
+
+main{min-height:calc(100dvh - var(--hdr))}
+.view{display:none}
+.view.active{display:block}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:var(--bd);background:var(--blue);color:#fff;border-radius:14px;padding:11px 18px;font-weight:800;font-size:14.5px;box-shadow:var(--sh-sm);transition:transform .08s,box-shadow .08s}
+.btn:hover{filter:brightness(1.05)}
+.btn:active{transform:translate(3px,3px);box-shadow:none}
+.btn.yellow{background:var(--yellow);color:var(--ink)}
+.btn.red{background:var(--red)}
+.btn.purple{background:var(--purple)}
+.btn.green{background:var(--green)}
+.btn.ghost{background:#fff;color:var(--ink)}
+.btn.sm{padding:7px 12px;font-size:13px;border-radius:11px;border-width:2px;box-shadow:2px 2px 0 var(--ink)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.linkbtn{background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;font-weight:700;font-size:13px}
+
+/* ---------- home ---------- */
+.home{max-width:1200px;margin:0 auto;padding:40px 22px 70px}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:44px;align-items:center}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--yellow);border:2px solid var(--ink);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:800}
+.hero h1{font-size:clamp(38px,5.4vw,66px);font-weight:800;margin:16px 0 14px;letter-spacing:-.035em}
+.hero h1 .hl{background:var(--red);color:#fff;padding:0 10px;border-radius:14px;display:inline-block;transform:rotate(-2deg)}
+.hero h1 .hl2{background:var(--blue);color:#fff;padding:0 10px;border-radius:14px;display:inline-block;transform:rotate(1.5deg)}
+.lead{font-size:17px;color:#3b372f;max-width:600px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.tiles{display:grid;grid-template-columns:repeat(6,1fr);gap:14px}
+.tile{grid-column:span 2;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);padding:16px 14px 14px;text-align:left;transition:transform .15s;min-height:150px;display:flex;flex-direction:column;justify-content:space-between}
+.tile:nth-child(4){grid-column:2/span 2}
+.tile:hover{transform:translateY(-4px) rotate(-1deg)}
+.tile svg{width:64px;height:44px;background:#fff;border:2px solid var(--ink);border-radius:10px;padding:4px}
+.tile b{font-size:17px;display:block;margin-top:10px}
+.tile small{font-size:12px;font-weight:700;opacity:.85}
+.feats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:54px}
+.feat{background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);padding:20px}
+.feat .ico{width:46px;height:46px;border-radius:14px;border:2px solid var(--ink);display:grid;place-items:center;font-size:22px;margin-bottom:12px}
+.feat h3{font-size:18px;margin-bottom:6px}
+.feat p{margin:0;color:#3b372f;font-size:14px}
+.flowbox{margin-top:22px;background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:var(--r);padding:20px 22px}
+.flowbox h3{font-size:18px}
+.flow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px;padding:0;list-style:none}
+.flow li{border:2px solid var(--ink);border-radius:16px;padding:12px;background:var(--soft)}
+.flow li b{display:block;font-size:14px}
+.flow li span{font-size:12.5px;color:#3b372f}
+.flow li i{font-style:normal;font-weight:800;font-size:12px;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:1px 8px;float:right}
+.quote{border-left:5px solid var(--red);padding:2px 0 2px 14px;margin:18px 0;font-size:15px;color:#3b372f}
+.quote b{display:block;font-size:20px;color:var(--ink);letter-spacing:-.01em}
+
+/* ---------- learning slides ---------- */
+.learn{display:grid;grid-template-columns:minmax(0,1fr) 410px;grid-template-rows:minmax(0,1fr) auto;gap:14px;padding:14px 16px 12px;height:calc(100dvh - var(--hdr))}
+.stagecard{--tint:#fff3e6;position:relative;border:var(--bd);box-shadow:var(--sh);border-radius:24px;overflow:hidden;background:radial-gradient(120% 100% at 50% 30%,#fff 0,var(--tint) 75%);min-height:0}
+.stage{position:absolute;inset:0;touch-action:none}
+.stage canvas{display:block;width:100%!important;height:100%!important;outline:none}
+.stage.grabbing,.stage.grabbing canvas{cursor:grabbing!important}
+.stage-tools{position:absolute;top:12px;left:12px;right:12px;display:flex;gap:7px;align-items:center;pointer-events:none;flex-wrap:wrap}
+.stage-tools > *{pointer-events:auto}
+.tool{display:inline-flex;align-items:center;gap:6px;background:#fff;border:2px solid var(--ink);border-radius:11px;padding:5px 10px;font-size:12.5px;font-weight:800}
+.tool:hover{background:var(--soft)}
+.tool svg{width:15px;height:15px}
+.tool.ar{background:var(--purple);color:#fff}
+.tool.ar[data-supported="false"]{background:#fff;color:var(--muted)}
+.stage-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;white-space:nowrap;pointer-events:none;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+.live{position:absolute;left:12px;bottom:48px;background:#fff;border:2px solid var(--ink);box-shadow:var(--sh-sm);border-radius:16px;padding:10px 13px;max-width:min(380px,calc(100% - 24px));font-size:13px}
+.live:empty{display:none}
+.live .mono{color:var(--muted);font-size:10.5px;display:block;margin-bottom:2px}
+.live b{font-size:16px;letter-spacing:-.01em}
+.live p{margin:4px 0 0;color:#3b372f;font-size:12.5px}
+.slidecard{border:var(--bd);box-shadow:var(--sh);border-radius:24px;background:#fff;overflow:auto;padding:22px 22px 26px;min-height:0}
+.stag{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--ink);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:800;background:var(--c,var(--yellow));color:var(--fg,var(--ink))}
+.slidecard h2{font-size:32px;font-weight:800;margin:12px 0 2px}
+.slidecard .idn{font-weight:700;color:var(--muted);font-size:15px}
+.def{font-size:15.5px;margin:12px 0 0;color:#26231e}
+.keybox{margin-top:14px;background:var(--tintc,var(--soft));border:2px solid var(--ink);border-radius:16px;padding:12px 14px;font-size:13.5px}
+.keybox b:first-child{display:block;font-size:13px;margin-bottom:3px}
+.exlist{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.exlist li{display:flex;gap:10px;align-items:flex-start;border:2px solid var(--ink);border-radius:14px;padding:9px 12px;font-size:13.5px;background:#fff}
+.exlist li span{font-size:18px;line-height:1.2}
+.sec{margin-top:18px}
+.sec > .mono{display:block;margin-bottom:10px;color:var(--muted)}
+.mission{margin-top:14px;border:2px solid var(--ink);background:#fff4cc;border-radius:16px;padding:12px 14px;box-shadow:var(--sh-sm)}
+.mission .mtag{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase}
+.mission p{margin:4px 0 0;font-size:14px}
+.mission .sub{margin-top:8px;display:grid;gap:5px;font-size:12.5px}
+.mission .sub span{display:flex;gap:8px;align-items:center}
+.mission .sub i{width:15px;height:15px;border-radius:50%;border:2px solid var(--ink);flex:none;background:#fff}
+.mission .sub i.ok{background:var(--green)}
+.mission.done{background:var(--ok-soft)}
+.mission.done .mtag{color:var(--ok)}
+.ctls{display:grid;gap:14px}
+.ctl{display:grid;gap:6px;font-size:13.5px}
+.ctl-l{display:flex;justify-content:space-between;align-items:baseline;font-weight:700}
+.ctl-l output{font-size:12px;font-weight:800;background:var(--soft);border-radius:8px;padding:1px 7px}
+input[type=range]{width:100%;accent-color:var(--blue);height:24px;margin:0}
+.sw{display:flex;gap:8px;flex-wrap:wrap}
+.sw button{width:34px;height:34px;border-radius:10px;border:2px solid var(--ink);padding:0}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 3px #fff,0 0 0 5px var(--ink)}
+.seg{display:flex;flex-wrap:wrap;gap:4px;background:var(--soft);padding:4px;border-radius:13px;border:2px solid var(--ink)}
+.seg button{flex:1;border:0;background:none;border-radius:9px;padding:7px 10px;font-size:12.5px;font-weight:700;color:var(--muted);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.seg button:disabled{opacity:.5}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.tgl{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:700;cursor:pointer}
+.tgl input{appearance:none;width:42px;height:24px;border-radius:999px;background:#e6dccb;border:2px solid var(--ink);position:relative;transition:.2s;margin:0;flex:none;cursor:pointer}
+.tgl input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid var(--ink);box-sizing:border-box;transition:.2s}
+.tgl input:checked{background:var(--green)}
+.tgl input:checked::after{left:20px}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+.snav{display:flex;justify-content:space-between;gap:8px;margin-top:22px}
+.ptiles{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.ptile{display:flex;gap:10px;align-items:center;text-align:left;border:2px solid var(--ink);border-radius:14px;padding:8px 10px;font-size:13px;font-weight:700}
+.ptile svg{width:40px;height:28px;background:#fff;border-radius:7px;border:2px solid var(--ink);padding:2px;flex:none}
+.ptile small{display:block;font-weight:600;font-size:11.5px}
+.strip{grid-column:1/-1;display:flex;align-items:center;gap:10px}
+.thumbs{display:flex;gap:7px;overflow-x:auto;flex:1;padding:4px 4px 6px;scrollbar-width:thin}
+.thumb{flex:none;min-width:66px;height:46px;border:2px solid var(--ink);border-radius:12px;background:var(--c,#fff);color:var(--fg,var(--ink));font-size:11px;font-weight:800;line-height:1.1;padding:4px 8px;position:relative;transition:transform .12s}
+.thumb small{display:block;font-weight:700;font-size:10px;opacity:.9}
+.thumb[aria-current="true"]{transform:translateY(-3px);box-shadow:3px 3px 0 var(--ink)}
+.thumb:not([aria-current="true"]){opacity:.72}
+.thumb .ck{position:absolute;top:-7px;right:-7px;width:18px;height:18px;border-radius:50%;background:var(--green);border:2px solid var(--ink);color:#fff;font-size:10px;display:grid;place-items:center}
+.counter{font-weight:800;font-size:13px;white-space:nowrap}
+
+/* ---------- AR scan ---------- */
+.arv{max-width:1200px;margin:0 auto;padding:18px 16px 60px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px;align-items:start}
+.arcam{position:relative;border:var(--bd);box-shadow:var(--sh);border-radius:24px;overflow:hidden;background:#151515;height:min(72dvh,640px);isolation:isolate}
+.arcam > video{object-fit:cover}
+.arstart{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#fff;padding:24px;background:radial-gradient(circle at 30% 20%,#3b2a7a,#151515 70%);z-index:5}
+.arstart h3{font-size:26px;margin:12px 0 8px}
+.arstart p{color:#d8d3ff;font-size:14px;max-width:420px;margin:0 auto 18px}
+.arframe{position:absolute;left:50%;top:46%;width:min(62%,340px);aspect-ratio:1;transform:translate(-50%,-50%);border:4px dashed rgba(255,255,255,.85);border-radius:24px;z-index:4;pointer-events:none;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{50%{transform:translate(-50%,-50%) scale(1.04);border-color:var(--yellow)}}
+.arstatus{position:absolute;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:8px;z-index:6;pointer-events:none}
+.arstatus > *{pointer-events:auto}
+.arpill{background:#fff;border:2px solid var(--ink);border-radius:999px;padding:5px 12px;font-size:12.5px;font-weight:800}
+.arsheet{background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:24px;padding:20px}
+.arsheet .live{position:static;box-shadow:none;margin-top:12px;max-width:none}
+.cards{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:12px}
+.cards figure{margin:0;border:2px solid var(--ink);border-radius:12px;overflow:hidden;background:#fff}
+.cards img{width:100%;display:block}
+.cards figcaption{font-size:10.5px;font-weight:800;text-align:center;padding:3px;border-top:2px solid var(--ink)}
+.howto{margin:12px 0 0;padding-left:20px;font-size:13.5px;display:grid;gap:5px}
+.err{background:var(--bad-soft);border:2px solid var(--ink);border-radius:14px;padding:12px 14px;font-size:13.5px;margin-top:12px}
+
+/* ---------- challenge ---------- */
+.chal{display:grid;grid-template-columns:minmax(0,1fr) 410px;gap:14px;padding:14px 16px;height:calc(100dvh - var(--hdr))}
+.chal .stagecard{--tint:#eef3ff;min-height:320px}
+.chal .slidecard{padding-top:20px}
+.scen{position:absolute;left:12px;top:12px;right:12px;pointer-events:none}
+.scen .card{pointer-events:auto;display:inline-block;background:#fff;border:2px solid var(--ink);box-shadow:var(--sh-sm);border-radius:16px;padding:10px 14px;max-width:560px}
+.scen .card b{font-size:17px;display:block}
+.scen .card p{margin:2px 0 0;font-size:13px;color:#3b372f}
+.src{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:3px}
+.src i{width:8px;height:8px;border-radius:50%;background:var(--yellow);border:1.5px solid var(--ink)}
+.src.ai i{background:var(--green)}
+.loading{position:absolute;inset:0;display:none;place-items:center;background:rgba(255,248,236,.7);backdrop-filter:blur(2px);font-size:14px;font-weight:800;z-index:3}
+.loading.on{display:grid}
+.spinner{width:34px;height:34px;border-radius:50%;border:4px solid #e6dccb;border-top-color:var(--purple);animation:spin .8s linear infinite;margin:0 auto 10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:5px 11px;font-size:12.5px;font-weight:700}
+.chips button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.qbox{margin-top:18px;padding-top:16px;border-top:2px dashed var(--ink)}
+.qbox h3{font-size:18px}
+.answers{display:grid;gap:8px;margin-top:14px}
+.ans{display:flex;align-items:center;gap:10px;text-align:left;border:2px solid var(--ink);background:#fff;border-radius:14px;padding:9px 12px;font-size:14.5px;font-weight:800;transition:transform .08s}
+.ans:hover:not(:disabled){transform:translateX(3px);background:var(--soft)}
+.ans svg{width:40px;height:28px;flex:none;background:#fff;border:2px solid var(--ink);border-radius:8px;padding:2px}
+.ans small{color:var(--muted);font-weight:700;margin-left:auto;font-size:12px}
+.ans.right{background:var(--ok-soft)}
+.ans.wrong{background:var(--bad-soft)}
+.ans:disabled{cursor:default}
+.fb{margin-top:14px;border:2px solid var(--ink);border-radius:16px;padding:12px 14px;font-size:14px;display:none}
+.fb.on{display:block}
+.fb.ok{background:var(--ok-soft)}
+.fb.no{background:var(--bad-soft)}
+.fb b{display:block;font-size:15px;margin-bottom:4px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:18px}
+.stat{border:2px solid var(--ink);border-radius:14px;padding:10px;background:var(--soft)}
+.stat b{font-size:22px;display:block;letter-spacing:-.02em}
+.stat small{font-size:11.5px;color:var(--muted);font-weight:700}
+details.spec{margin-top:16px;font-size:12.5px}
+details.spec summary{cursor:pointer;color:var(--muted);font-weight:700}
+details.spec pre{background:#151515;color:#f1ece2;border-radius:14px;padding:12px;overflow:auto;max-height:260px;font-size:11.5px;line-height:1.45}
+
+/* ---------- quiz ---------- */
+.quiz{max-width:760px;margin:0 auto;padding:36px 18px 70px}
+.qcard{background:#fff;border:var(--bd);box-shadow:var(--sh);border-radius:24px;padding:26px}
+.qtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.qbar{height:12px;background:var(--soft);border:2px solid var(--ink);border-radius:999px;overflow:hidden;margin-bottom:22px}
+.qbar i{display:block;height:100%;background:var(--purple);transition:width .3s}
+.qfig{background:var(--soft);border:2px solid var(--ink);border-radius:16px;display:grid;place-items:center;padding:14px;margin:14px 0}
+.qfig svg{width:100%;max-width:360px;height:auto}
+.qopts{display:grid;gap:8px}
+.result{text-align:center}
+.score{font-size:80px;font-weight:800;letter-spacing:-.05em;line-height:1}
+.score small{font-size:26px;color:var(--muted)}
+.rgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:22px 0;text-align:left}
+.rgrid div{border:2px solid var(--ink);border-radius:14px;padding:10px;font-size:12px;background:var(--c,#fff)}
+.rgrid b{display:block;font-size:13px}
+.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;text-align:left}
+
+/* ---------- misc ---------- */
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:14px;border:2px solid var(--ink);font-size:14px;font-weight:700;opacity:0;transition:.3s;z-index:200;pointer-events:none;max-width:calc(100% - 32px)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.toast.ok{background:var(--green)}
+.modal{position:fixed;inset:0;background:rgba(21,21,21,.45);display:none;place-items:center;z-index:150;padding:20px}
+.modal.on{display:grid}
+.modal .box{background:#fff;border:var(--bd);box-shadow:6px 6px 0 var(--ink);border-radius:24px;max-width:640px;width:100%;max-height:85vh;overflow:auto;padding:26px;position:relative}
+.modal h3{font-size:22px;margin-bottom:10px}
+.modal p,.modal li{font-size:14px;color:#3b372f}
+.modal .close{position:absolute;top:14px;right:14px;border:2px solid var(--ink);background:var(--yellow);width:34px;height:34px;border-radius:50%;font-size:18px;font-weight:800}
+.arch{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:14px 0}
+.arch div{background:var(--soft);border:2px solid var(--ink);border-radius:12px;padding:10px;font-size:12px;text-align:center}
+.arch b{display:block;font-size:12.5px}
+#arOverlay{position:fixed;inset:0;pointer-events:none;display:none;z-index:100}
+#arOverlay.on{display:block}
+#arOverlay .bar{pointer-events:auto;position:absolute;left:12px;right:12px;bottom:18px;background:#fff;border:var(--bd);border-radius:18px;padding:12px;display:grid;gap:10px}
+#arOverlay .bar b{font-size:14px}
+#arOverlay .bar .row button{background:var(--yellow);border:2px solid var(--ink);border-radius:10px;padding:8px 12px;font-weight:800;font-size:13px}
+#arOverlay .bar .row button.x{background:var(--red);color:#fff}
+.fatal{max-width:560px;margin:80px auto;padding:24px;background:#fff;border:var(--bd);border-radius:20px}
+
+@media (max-width:1180px){
+  .learn,.chal{grid-template-columns:minmax(0,1fr) 360px}
+}
+@media (max-width:1340px){
+  .step .lbl{display:none}
+  .step{padding:4px}
+}
+@media (max-width:920px){
+  header.top{flex-wrap:wrap;gap:8px 12px;padding:8px 12px}
+  .steps{order:3;width:100%;justify-content:space-between;margin:0}
+  .brand small{display:none}
+  .hero{grid-template-columns:1fr;gap:28px}
+  .feats{grid-template-columns:1fr;margin-top:32px}
+  .flow{grid-template-columns:1fr 1fr}
+  .learn,.chal{display:flex;flex-direction:column;height:auto;padding:10px 10px 0}
+  .stagecard{height:50dvh;min-height:300px;flex:none}
+  .slidecard{overflow:visible}
+  .strip{position:sticky;bottom:0;background:var(--bg);padding:8px 0 10px;border-top:2px solid var(--ink);margin:0 -10px;padding-left:10px;padding-right:10px;order:3}
+  .strip .counter{display:none}
+  .arv{grid-template-columns:1fr;padding:10px 10px 50px}
+  .arcam{height:62dvh}
+  .cards{grid-template-columns:repeat(5,1fr);gap:5px}
+  .rgrid{grid-template-columns:repeat(2,1fr)}
+  .summary{grid-template-columns:1fr}
+  .arch{grid-template-columns:1fr 1fr}
+  .live p{display:none}
+}
+@media (max-width:560px){
+  .hdr-right .chip.timer{display:none}
+  .tiles{gap:10px}
+  .tile{min-height:120px;padding:12px}
+  .tile b{font-size:15px}
+  .slidecard h2{font-size:26px}
+  .navar span{display:none}
+}
+
+/* ---------- color lab additions ---------- */
+.hero h1 .rainbow{background:linear-gradient(90deg,#E32322,#F18E1C,#F4E500,#008E5B,#2A71B0,#6D398B);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mixer{display:flex;align-items:center;gap:8px}
+.mslot{flex:1;min-height:54px;border:2px solid var(--ink);border-radius:12px;display:grid;place-items:center;font-size:11.5px;font-weight:800;text-align:center;padding:4px;background:#fff;color:var(--muted)}
+.mslot.res{flex:1.3;box-shadow:var(--sh-sm)}
+.found{display:flex;gap:6px;flex-wrap:wrap}
+.fchip{border:2px dashed var(--ink);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:800;color:var(--muted)}
+.fchip.on{border-style:solid}
+.pal{display:flex;gap:6px}
+.sw-big{flex:1;min-height:58px;border:2px solid var(--ink);border-radius:12px;padding:6px 8px;display:flex;flex-direction:column;justify-content:flex-end;font-size:11px}
+.sw-big b{font-size:12px}
+.psy{border:2px solid var(--ink);border-radius:14px;overflow:hidden;background:#fff}
+.psy-h{padding:8px 12px;font-weight:800;font-size:15px;border-bottom:2px solid var(--ink)}
+.psy p{margin:0;padding:6px 12px;font-size:13px;border-bottom:1px dashed #e6dccb}
+.psy p:last-child{border-bottom:0}
+.briefs{display:grid;gap:10px}
+.brief{border:2px solid var(--ink);border-radius:14px;padding:10px 12px;background:#fffdf7}
+.brief b{font-size:13.5px;display:block;margin-bottom:6px}
+.tabs2{display:flex;gap:6px;margin-top:14px}
+.tabs2 button{flex:1;border:2px solid var(--ink);border-radius:12px;padding:9px;font-weight:800;font-size:13.5px;background:#fff}
+.tabs2 button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.basewheel{display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-top:6px}
+.basewheel button{aspect-ratio:1;border:2px solid var(--ink);border-radius:7px;padding:0}
+.baserow{display:flex;gap:8px;align-items:center}
+.baserow input[type=color]{width:46px;height:40px;border:2px solid var(--ink);border-radius:10px;padding:0;background:#fff;cursor:pointer}
+.baseinfo{flex:1;border:2px solid var(--ink);border-radius:10px;padding:8px 10px;font-weight:800;font-size:13px}
+.palcard{border:2px solid var(--ink);border-radius:16px;padding:10px 12px;margin-top:10px;background:#fff}
+.palcard.on{box-shadow:var(--sh-sm);background:#f3fbf7}
+.palhead{display:flex;justify-content:space-between;gap:8px;align-items:center;margin-bottom:6px}
+.palhead b{font-size:14px}
+.pill{border:1.5px solid var(--ink);border-radius:999px;padding:1px 8px;font-size:11px;font-weight:800;background:var(--soft);white-space:nowrap}
+.pill.ok{background:var(--ok-soft)} .pill.no{background:var(--bad-soft)}
+.palfoot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;gap:8px}
+.strip5{display:flex;border:2px solid var(--ink);border-radius:10px;overflow:hidden;min-height:56px}
+.strip5 > div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:4px 5px;font-size:10px;font-weight:800;min-width:0}
+.strip5 > div small{font-size:9px;font-weight:700;opacity:.85}
+.strip5 > div span{overflow:hidden;text-overflow:ellipsis}
+.strip5.sm{min-height:26px}
+#mine{margin-top:12px}
+.whys{margin:0;padding-left:18px;font-size:13px;display:grid;gap:4px}
+.qchips{display:inline-flex;border:2px solid var(--ink);border-radius:8px;overflow:hidden;flex:none}
+.qchips i{width:24px;height:26px;display:block}
+.qposter{display:flex;flex-wrap:wrap;gap:10px 18px;justify-content:center;padding:22px;border-radius:12px;border:2px solid var(--ink);width:100%}
+.qposter b{font-size:26px;font-weight:800;letter-spacing:.02em}
+</style>
+<script>
+  /* ===== KONFIGURASI GenAI untuk hosting publik =====
+     Isi dengan URL Web App Google Apps Script (berakhiran /exec).
+     Biarkan kosong ('') untuk memakai mode simulasi. */
+  window.COLORLAB_AI_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxv_KHvZJZO97FR8akHD9g-tpTlC_tLY_ujs_6YNUBewWdp0j56gyJn0wPFmqd4GNk/exec';
+</script>
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<header class="top">
+  <button class="brand" data-go="intro" aria-label="Beranda">
+    <svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><rect x="1.5" y="1.5" width="37" height="37" rx="11" fill="#fff" stroke="#151515" stroke-width="2.5"/><path d="M20 20 L20 7 A13 13 0 0 1 31.3 13.5Z" fill="#E32322"/><path d="M20 20 L31.3 13.5 A13 13 0 0 1 31.3 26.5Z" fill="#F4E500"/><path d="M20 20 L31.3 26.5 A13 13 0 0 1 20 33Z" fill="#008E5B"/><path d="M20 20 L20 33 A13 13 0 0 1 8.7 26.5Z" fill="#2A71B0"/><path d="M20 20 L8.7 26.5 A13 13 0 0 1 8.7 13.5Z" fill="#6D398B"/><path d="M20 20 L8.7 13.5 A13 13 0 0 1 20 7Z" fill="#F18E1C"/><circle cx="20" cy="20" r="5" fill="#fff" stroke="#151515" stroke-width="2"/></svg>
+    <span><b>Color Lab</b><small>Exploring Color Theory &amp; Psychology</small></span>
+  </button>
+  <ol class="steps" id="steps"></ol>
+  <div class="hdr-right">
+    <button class="navar" id="navAR" data-go="ar" title="Scan kartu AR">📱 <span>AR Scan</span></button>
+    <span class="chip timer" title="Waktu belajar (target 15–20 menit)">⏱ <span id="timer">00:00</span></span>
+    <button class="chip" id="aiChip" title="Status GenAI"><span class="dot"></span><span id="aiChipTxt">Memeriksa GenAI…</span></button>
+  </div>
+  <div class="overall" id="overall"></div>
+</header>
+
+<main>
+  <!-- ================= HOME ================= -->
+  <section class="view active" id="v-intro">
+    <div class="home">
+      <div class="hero">
+        <div>
+          <span class="tag">🎨 Desain Komunikasi Visual · Teori &amp; Psikologi Warna</span>
+          <h1>Eksperimen <span class="rainbow">warna</span>, lihat <span class="hl2">efeknya</span> langsung!</h1>
+          <p class="lead">Putar roda warna 3D, campur pigmen, susun harmoni, uji kontras teks, dan jelajahi kesan psikologis warna pada poster dan kemasan. Lalu minta GenAI meracik palet untuk karakter visual pilihanmu.</p>
+          <div class="quote"><b>“Warna adalah kekuatan yang langsung memengaruhi jiwa.”</b>Wassily Kandinsky, <i>Concerning the Spiritual in Art</i> (1911)</div>
+          <div class="cta">
+            <button class="btn yellow" id="startBtn">Mulai belajar →</button>
+            <button class="btn purple" data-go="ar">📱 Scan kartu AR</button>
+            <button class="btn ghost" data-modal="about">Tentang media</button>
+          </div>
+        </div>
+        <div class="tiles" id="tiles"></div>
+      </div>
+      <div class="feats">
+        <div class="feat"><div class="ico" style="background:var(--red)">🎡</div><h3>Slide 3D interaktif</h3><p>Setiap materi punya slide <b>Kenali</b> dan <b>Coba</b>. Roda warna, poster, dan kemasan 3D berubah langsung saat kamu mengatur warnanya.</p></div>
+        <div class="feat"><div class="ico" style="background:var(--purple)">📱</div><h3>AR Scan kartu</h3><p>Arahkan kamera HP (Android atau iPhone) ke kartu Color Lab, dan eksperimen warna muncul di atas meja.</p></div>
+        <div class="feat"><div class="ico" style="background:var(--green)">✦</div><h3>AI Lab</h3><p>GenAI meracik variasi palet dari warna dan karakter pilihanmu, lalu menguji kemampuanmu memilih palet untuk sebuah brief.</p></div>
+      </div>
+      <div class="flowbox">
+        <h3>⏱ Alur belajar ±15–20 menit</h3>
+        <ol class="flow">
+          <li><i>2′</i><b>1 · Pengantar</b><span>Hue, value, saturation, dan cara memakai media.</span></li>
+          <li><i>4′</i><b>2 · Eksplorasi</b><span>Roda warna dan slide “Kenali” kelima materi.</span></li>
+          <li><i>5′</i><b>3 · Eksperimen</b><span>Misi harmoni, kontras, suhu, dan psikologi warna.</span></li>
+          <li><i>5′</i><b>4 · AI Generation</b><span>Buat palet dengan GenAI dan jawab skenario visual.</span></li>
+          <li><i>3′</i><b>5 · Evaluasi</b><span>Pilih kombinasi warna yang tepat untuk 7 kasus.</span></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= LEARNING SLIDES ================= -->
+  <section class="view" id="v-room">
+    <div class="learn">
+      <div class="stagecard" id="stageCard">
+        <div class="stage" id="roomStage"></div>
+        <div class="stage-tools">
+          <button class="tool" id="camReset" title="Kembalikan sudut pandang"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2.5 8a5.5 5.5 0 1 0 1.6-3.9"/><path d="M2.5 2.5v3h3"/></svg>Reset</button>
+          <button class="tool" id="viewFlat" title="Tampilan lurus (2D)">2D</button>
+          <button class="tool" id="viewTilt" title="Tampilan miring (3D)">3D</button>
+          <span style="flex:1"></span>
+          <button class="tool ar" id="arBtn" data-supported="unknown" title="AR tanpa kartu (WebXR)">🥽 AR ruang</button>
+        </div>
+        <div class="live" id="live"></div>
+        <div class="stage-hint" id="roomHint">Seret latar untuk memutar · scroll untuk zoom</div>
+      </div>
+      <aside class="slidecard" id="slideCard"></aside>
+      <div class="strip">
+        <button class="btn ghost sm" id="prevSlide" aria-label="Slide sebelumnya">←</button>
+        <div class="thumbs" id="thumbs"></div>
+        <span class="counter" id="counter"></span>
+        <button class="btn sm" id="nextSlide" aria-label="Slide berikutnya">→</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= AR SCAN ================= -->
+  <section class="view" id="v-ar">
+    <div class="arv">
+      <div class="arcam" id="arCam">
+        <div class="arstart" id="arStart">
+          <div>
+            <div style="font-size:54px">📱</div>
+            <h3>AR Scan Kartu Color Lab</h3>
+            <p>Arahkan kamera ke salah satu dari 5 kartu. Eksperimen warna 3D akan muncul di atas kartu dan bisa kamu sentuh dan atur.</p>
+            <button class="btn yellow" id="arGo">Nyalakan kamera</button>
+            <div class="err" id="arErr" hidden style="color:var(--ink);text-align:left;margin-top:16px"></div>
+          </div>
+        </div>
+      </div>
+      <aside class="arsheet" id="arSheet">
+        <span class="stag" style="--c:var(--purple);--fg:#fff">📱 AR Scan</span>
+        <h2 style="font-size:26px;margin:10px 0 4px" id="arSheetTitle">Belum ada kartu terdeteksi</h2>
+        <p class="hint" id="arSheetHint" style="margin-top:0">Siapkan kartu: cetak PDF kartu, atau tampilkan gambar kartu di layar laptop lalu pindai dengan HP.</p>
+        <div id="arPanel"></div>
+        <div id="arPrep">
+          <div class="cards" id="cardGallery"></div>
+          <ol class="howto">
+            <li>Buka media ini di HP lewat link publik (HTTPS), lalu izinkan kamera.</li>
+            <li>Pegang HP ±20–40 cm dari kartu, di tempat yang cukup terang.</li>
+            <li>Sentuh objek atau pakai kontrol di panel ini untuk menyelesaikan misi.</li>
+          </ol>
+        </div>
+        <div class="row" style="margin-top:14px"><button class="btn ghost sm" id="arStop" hidden>⏹ Matikan kamera</button><button class="btn ghost sm" data-go="room">← Kembali ke slide</button></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= AI LAB ================= -->
+  <section class="view" id="v-ai">
+    <div class="chal">
+      <div class="stagecard" id="aiWrap" style="--tint:#f1e9ff">
+        <div class="stage" id="aiStage"></div>
+        <div class="scen"><div class="card"><span class="src" id="aiSrc"><i></i><span>Belum ada hasil</span></span><b id="aiTitle">AI Lab</b><p id="aiText">Pilih warna utama dan karakter visual, lalu tekan <b>Generate Color Palette</b>.</p><p id="aiNote" style="color:var(--muted);font-size:12px;margin:2px 0 0"></p></div></div>
+        <div class="stage-hint">Klik poster untuk memilih · putar &amp; zoom untuk membandingkan</div>
+        <div class="loading" id="aiLoading"><div><div class="spinner"></div><span id="aiLoadingTxt">GenAI sedang bekerja…</span></div></div>
+      </div>
+      <aside class="slidecard">
+        <span class="stag" style="--c:var(--green)">✦ Tahap 4 · AI Generation</span>
+        <h2>AI Lab</h2>
+        <div class="tabs2" id="aiTabs"><button data-t="pal">🎨 Palette Generator</button><button data-t="scen">🎯 Visual Scenario</button></div>
+
+        <div id="tabPal">
+          <p class="def">GenAI membuat tiga variasi palet (masing-masing 5 warna dengan kode HEX dan perannya) dari warna utama dan karakter visual yang kamu pilih. Bandingkan pada poster, lalu pilih yang terbaik.</p>
+          <div class="sec"><span class="mono">Warna utama</span>
+            <div class="baserow"><input type="color" id="basePick" aria-label="Pilih warna utama"><div class="baseinfo" id="baseInfo"></div></div>
+            <div class="basewheel" id="baseWheel"></div></div>
+          <div class="sec"><span class="mono">Karakter visual</span><div class="chips" id="charChips"></div></div>
+          <div class="row" style="margin-top:16px"><button class="btn green" id="genPal">✦ Generate Color Palette</button></div>
+          <div id="palList"></div>
+          <div id="mine"></div>
+        </div>
+
+        <div id="tabScen" hidden>
+          <p class="def">GenAI menulis sebuah brief desain dan tiga opsi palet yang diterapkan pada poster. Pilih palet yang paling sesuai dengan karakter yang diminta, lalu baca alasannya.</p>
+          <div class="row" style="margin-top:12px"><button class="btn green" id="genScen">✦ Buat skenario</button><span class="pill" id="scStat" style="align-self:center">0/0 benar</span></div>
+          <div class="qbox" id="scenBox" hidden>
+            <h3>Brief</h3>
+            <p class="def" id="scenBrief" style="margin-top:6px"></p>
+            <div class="answers" id="scenOpts"></div>
+            <div class="fb" id="scenFb"></div>
+            <div class="row" style="margin-top:12px" id="scenNext" hidden><button class="btn" id="nextScen">Skenario baru →</button></div>
+          </div>
+        </div>
+
+        <div class="sec" id="srcSec"><span class="mono">Sumber generator</span><div class="seg" id="srcSeg"></div><p class="hint" id="srcNote"></p></div>
+        <details class="spec" id="specBox" hidden><summary>Lihat data yang dihasilkan (JSON)</summary><pre id="specPre"></pre></details>
+        <div class="snav"><button class="btn ghost sm" data-go="room">← Slide belajar</button><button class="btn sm" data-go="quiz">Lanjut ke Evaluasi →</button></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ================= QUIZ ================= -->
+  <section class="view" id="v-quiz"><div class="quiz" id="quiz"></div></section>
+</main>
+
+<div id="arOverlay"><div class="bar"><div><b id="arTitle">Mode AR</b><br><small>Ketuk objek untuk berinteraksi.</small></div><div class="row" id="arActions"></div></div></div>
+
+<div class="modal" id="m-about"><div class="box"><button class="close" data-close>×</button>
+  <h3>Tentang Color Lab</h3>
+  <p>Media pembelajaran mandiri untuk mahasiswa Desain Komunikasi Visual pada materi <b>Teori Warna dan Psikologi Warna</b>: roda warna, warna hangat–dingin, harmoni, kontras, dan asosiasi psikologis warna.</p>
+  <ul>
+    <li><b>Slide 3D interaktif (Three.js/WebGL):</b> roda warna RYB 3D, poster, dan kemasan yang warnanya berubah langsung.</li>
+    <li><b>AR Scan kartu (MindAR, image tracking):</b> lima kartu cetak menjadi penanda; berjalan di browser Android dan iPhone tanpa instal aplikasi.</li>
+    <li><b>AR ruang (WebXR):</b> opsi tambahan tanpa kartu untuk perangkat yang mendukung <code>immersive-ar</code>.</li>
+    <li><b>GenAI:</b> menghasilkan variasi palet dan skenario latihan secara dinamis, lengkap dengan alasan pemilihan warna.</li>
+  </ul>
+  <p style="margin-bottom:0"><b>Catatan model warna:</b> teori harmoni di sini memakai roda RYB yang lazim di pendidikan seni dan desain. Layar memakai model RGB, dan percetakan memakai CMYK. Kode HEX ditampilkan untuk penerapan digital.</p>
+</div></div>
+
+<div class="modal" id="m-ai"><div class="box"><button class="close" data-close>×</button>
+  <h3>Cara kerja GenAI di AI Lab</h3>
+  <div class="arch"><div><b>1 · Permintaan</b>warna utama + karakter visual</div><div><b>2 · GenAI</b>mengembalikan palet/skenario (JSON)</div><div><b>3 · Validasi</b>HEX dicek, kontras teks dihitung</div><div><b>4 · Render 3D</b>palet diterapkan pada poster</div></div>
+  <p>GenAI tidak sekadar mengobrol. Ia menghasilkan <b>data warna terstruktur</b>: kode HEX, peran tiap warna (latar, dominan, sekunder, aksen, teks), skema harmoni, dan alasannya. Aplikasi memvalidasi data itu, <b>menghitung sendiri rasio kontras teks</b> dengan rumus WCAG, lalu menerapkannya pada poster 3D.</p>
+  <ul>
+    <li><b>Claude (GenAI)</b>: aktif saat halaman dibuka melalui Claude, lewat runtime aman milik platform (tanpa API key di halaman).</li>
+    <li><b>Backend Gemini</b>: saat di-hosting publik, halaman memanggil Google Apps Script yang menyimpan API key di server.</li>
+    <li><b>Mode simulasi</b>: jika GenAI tidak tersedia, generator berbasis aturan teori warna membuat hasil dengan skema yang sama. Label sumber selalu ditampilkan.</li>
+  </ul>
+  <p id="aiStatusLine" style="margin-bottom:0"></p>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+/* =========================================================
+   Utilities
+   ========================================================= */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const rad = d => d * Math.PI / 180;
+const deg = r => r * 180 / Math.PI;
+const rnd = (a, b) => a + Math.random() * (b - a);
+const rndi = (a, b) => Math.floor(rnd(a, b + 1));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const num = (v, d = 2) => Number(v).toFixed(d).replace('.', ',');
+const easeOut = k => 1 - Math.pow(1 - k, 3);
+
+function h(tag, attrs = {}, ...kids) {
+  const el = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (k === 'class') el.className = v;
+    else if (k === 'html') el.innerHTML = v;
+    else if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v);
+    else if (v === true) el.setAttribute(k, '');
+    else if (v !== false && v != null) el.setAttribute(k, v);
+  }
+  for (const kid of kids.flat()) {
+    if (kid == null || kid === false) continue;
+    el.append(kid.nodeType ? kid : document.createTextNode(kid));
+  }
+  return el;
+}
+
+const C = {
+  ink: '#151515', paper: '#fff8ec', board: '#efe6d6', white: '#fffdf7', grey: '#a8a196', lgrey: '#d9d2c5',
+  accent: '#ff4757', red: '#ff4757', blue: '#2e6bff', teal: '#10b981', green: '#10b981', yellow: '#ffbe0b', purple: '#8b5cf6'
+};
+
+function hexToRgb(hex) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || '').trim());
+  if (!m) return null;
+  const n = parseInt(m[1], 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+function luminance(hex) {
+  const rgb = hexToRgb(hex) || [0, 0, 0];
+  const [r, g, b] = rgb.map(v => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+function contrast(a, b) {
+  const la = luminance(a), lb = luminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+let toastT;
+function toast(msg, kind = '') {
+  const t = $('#toast');
+  t.textContent = msg; t.className = 'toast on ' + kind;
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = 'toast', 2800);
+}
+
+/* =========================================================
+   Geometry helpers
+   ========================================================= */
+const mat = (c, o = {}) => new THREE.MeshStandardMaterial({ color: c, roughness: .45, metalness: .02, ...o });
+const shadowy = m => { m.castShadow = true; m.receiveShadow = true; return m; };
+function extrude(shape, depth = .16, bevel = true) {
+  const g = new THREE.ExtrudeGeometry(shape, { depth, bevelEnabled: bevel, bevelThickness: .025, bevelSize: .025, bevelSegments: 2, curveSegments: 48 });
+  g.translate(0, 0, -depth / 2);
+  return g;
+}
+function rrShape(w, h, r) {
+  const s = new THREE.Shape(), x = -w / 2, y = -h / 2; r = Math.min(r, w / 2, h / 2);
+  s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
+  s.lineTo(x + w, y + h - r); s.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  s.lineTo(x + r, y + h); s.quadraticCurveTo(x, y + h, x, y + h - r);
+  s.lineTo(x, y + r); s.quadraticCurveTo(x, y, x + r, y);
+  return s;
+}
+function arcShape(r1, r2, a0, a1) {
+  const s = new THREE.Shape();
+  s.absarc(0, 0, r2, a0, a1, false);
+  s.absarc(0, 0, r1, a1, a0, true);
+  s.closePath();
+  return s;
+}
+function pacShape(r, mouthDeg) {
+  const m = rad(mouthDeg) / 2, s = new THREE.Shape();
+  s.moveTo(0, 0); s.lineTo(r * Math.cos(m), r * Math.sin(m));
+  s.absarc(0, 0, r, m, Math.PI * 2 - m, false);
+  s.lineTo(0, 0);
+  return s;
+}
+function triShape(s) {
+  const t = new THREE.Shape();
+  t.moveTo(0, s * .577); t.lineTo(-s / 2, -s * .289); t.lineTo(s / 2, -s * .289); t.closePath();
+  return t;
+}
+/* Rubin vase profile (right contour, top → bottom). Features face the centre: forehead, nose, lips, chin. */
+const VASE_W = 2.4, VASE_H = 2.5;
+function vaseContour() {
+  const P = [[1.5, 2.5], [1.32, 2.2], [.98, 1.9], [.86, 1.55], [.96, 1.3], [.76, 1.05], [.46, .78], [.74, .55], [.6, .38], [.72, .24], [.58, .08], [.82, -.18], [.62, -.5], [.9, -.85], [1.08, -1.4], [1.22, -2.0], [1.5, -2.5]];
+  const curve = new THREE.CatmullRomCurve3(P.map(([x, y]) => new THREE.Vector3(x, y, 0)), false, 'centripetal');
+  return curve.getPoints(110).map(v => [v.x, v.y]);
+}
+function vasePolys() {
+  const R = vaseContour();
+  const vase = [...R, ...R.slice().reverse().map(([x, y]) => [-x, y])];
+  const right = [[VASE_W, VASE_H], ...R, [VASE_W, -VASE_H]];
+  const left = [[-VASE_W, VASE_H], ...R.map(([x, y]) => [-x, y]), [-VASE_W, -VASE_H]];
+  return { vase, left, right };
+}
+const polyShape = pts => new THREE.Shape(pts.map(([x, y]) => new THREE.Vector2(x, y)));
+
+/* =========================================================
+   Stage: Three.js scene + direct manipulation + WebXR AR
+   ========================================================= */
+class Stage {
+  constructor(host, ext = null) {
+    this.host = host; this.ext = ext; this.active = true;
+    if (ext) {
+      this.renderer = ext.renderer; this.scene = ext.scene; this.camera = ext.camera;
+      this.controls = { enabled: true, update() {}, target: new THREE.Vector3() };
+      this.root = new THREE.Group(); this.root.position.z = .02; ext.parent.add(this.root);
+      this.initCommon();
+      return;
+    }
+    const r = this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    r.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    r.shadowMap.enabled = true; r.shadowMap.type = THREE.PCFSoftShadowMap;
+    r.outputColorSpace = THREE.SRGBColorSpace;
+    r.xr.enabled = true;
+    host.appendChild(r.domElement);
+
+    this.scene = new THREE.Scene();
+    this.camera = new THREE.PerspectiveCamera(36, 1, .01, 200);
+    this.controls = new OrbitControls(this.camera, r.domElement);
+    Object.assign(this.controls, { enableDamping: true, dampingFactor: .08, minDistance: 4, maxDistance: 30, enablePan: false, rotateSpeed: .8 });
+    this.controls.minPolarAngle = .15; this.controls.maxPolarAngle = Math.PI - .15;
+
+    const hemi = new THREE.HemisphereLight(0xffffff, 0xd6d0c4, 1.15);
+    const dir = new THREE.DirectionalLight(0xffffff, 1.55);
+    dir.position.set(-4, 6, 10); dir.castShadow = true; dir.shadow.mapSize.set(1024, 1024);
+    Object.assign(dir.shadow.camera, { left: -9, right: 9, top: 9, bottom: -9, near: 1, far: 40 });
+    dir.shadow.bias = -.0005; dir.shadow.radius = 4;
+    this.scene.add(hemi, dir);
+
+    this.root = new THREE.Group(); this.scene.add(this.root);
+    this.initCommon();
+    new ResizeObserver(() => this.resize()).observe(host);
+    this.resize();
+    r.setAnimationLoop(() => this.loop());
+    this.setupXRController();
+  }
+  initCommon() {
+    const host = this.host;
+    this.board = new THREE.Mesh(new THREE.PlaneGeometry(this.ext ? 14 : 60, this.ext ? 9 : 40), new THREE.MeshStandardMaterial({ color: C.board, roughness: 1 }));
+    this.board.position.z = -.32; this.board.receiveShadow = true;
+    this.content = new THREE.Group();
+    this.root.add(this.board, this.content);
+
+    this.interactives = [];
+    this.tickers = new Set();
+    this.ray = new THREE.Raycaster(); this.ndc = new THREE.Vector2(); this.plane = new THREE.Plane();
+    this.viewW = 12; this.viewH = 8; this.tilt = .16;
+
+    this._h = { d: e => this.down(e), m: e => this.move(e), u: e => this.up(e) };
+    host.addEventListener('pointerdown', this._h.d, true);
+    window.addEventListener('pointermove', this._h.m);
+    window.addEventListener('pointerup', this._h.u);
+    window.addEventListener('pointercancel', this._h.u);
+  }
+  destroy() {
+    this.clear();
+    this.host.removeEventListener('pointerdown', this._h.d, true);
+    window.removeEventListener('pointermove', this._h.m);
+    window.removeEventListener('pointerup', this._h.u);
+    window.removeEventListener('pointercancel', this._h.u);
+    if (this.root.parent) this.root.parent.remove(this.root);
+  }
+  tick() { for (const f of this.tickers) if (f() === false) this.tickers.delete(f); }
+  get visible() { return this.ext ? this.active : this.host.offsetParent !== null; }
+  resize() {
+    if (this.ext) return;
+    const w = this.host.clientWidth, h = this.host.clientHeight;
+    if (!w || !h || this.renderer.xr.isPresenting) return;
+    this.renderer.setSize(w, h, false);
+    this.camera.aspect = w / h; this.camera.updateProjectionMatrix();
+    this.fit();
+  }
+  setView(w, h, tilt = this.tilt) {
+    this.viewW = w; this.viewH = h; this.tilt = tilt;
+    if (this.ext) { this.root.scale.setScalar(1.12 / Math.max(w, h * 1.15)); this.board.scale.set(w * 1.06 / 14, h * 1.06 / 9, 1); return; }
+    this.resetCamera();
+  }
+  resetCamera() {
+    if (this.ext) return;
+    this.controls.target.set(0, 0, 0);
+    this.camera.position.set(0, -this.tilt * 10, 10).normalize();
+    this.fit();
+  }
+  fit() {
+    if (this.ext) return;
+    const t = Math.tan(rad(this.camera.fov) / 2);
+    const dist = Math.max((this.viewH / 2) / t, (this.viewW / 2) / (t * this.camera.aspect)) * 1.08 + .6;
+    const dir = this.camera.position.clone().sub(this.controls.target).normalize();
+    if (!isFinite(dir.x)) dir.set(0, 0, 1);
+    this.camera.position.copy(this.controls.target).addScaledVector(dir, dist);
+    this.controls.maxDistance = dist * 2.2; this.controls.minDistance = dist * .35;
+    this.controls.update();
+  }
+  setBoard(color, visible = true) { this.board.material.color.set(color); this.board.visible = visible; }
+  clear() {
+    this.tickers.clear(); this.interactives.length = 0;
+    for (const c of [...this.content.children]) {
+      c.traverse(o => {
+        if (o.geometry) o.geometry.dispose();
+        if (o.material) (Array.isArray(o.material) ? o.material : [o.material]).forEach(m => m.dispose());
+      });
+      this.content.remove(c);
+    }
+    this.drag = null; this.painting = false; this.clicking = null; this.controls.enabled = true;
+  }
+  add(o, interactive = false) { this.content.add(o); if (interactive) this.interactives.push(o); return o; }
+  animate(ms, fn) {
+    const t0 = performance.now();
+    const tick = () => { const k = Math.min(1, (performance.now() - t0) / ms); fn(easeOut(k), k); return k < 1; };
+    this.tickers.add(tick);
+  }
+  pulse(o, amt = .28) { const s0 = o.userData.baseScale || 1; this.animate(320, k => o.scale.setScalar(s0 * (1 + amt * (1 - k)))); }
+  loop() {
+    if (!this.renderer.xr.isPresenting && !this.visible) return;
+    this.tick();
+    if (!this.renderer.xr.isPresenting) this.controls.update();
+    this.renderer.render(this.scene, this.camera);
+  }
+  setNDC(e) {
+    const r = this.renderer.domElement.getBoundingClientRect();
+    this.ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    if (this.ext) { this.camera.updateMatrixWorld(); this.camera.projectionMatrixInverse.copy(this.camera.projectionMatrix).invert(); }
+    this.ray.setFromCamera(this.ndc, this.camera);
+  }
+  hitTest() {
+    const hits = this.ray.intersectObjects(this.interactives, true);
+    for (const hit of hits) { let o = hit.object; while (o && !o.userData.interactive) o = o.parent; if (o) return { o, point: hit.point }; }
+    return null;
+  }
+  down(e) {
+    if (!this.active) return;
+    if (e.button !== undefined && e.button !== 0) return;
+    if (e.target !== this.renderer.domElement) return;
+    this.setNDC(e);
+    const hit = this.hitTest();
+    this.downAt = { x: e.clientX, y: e.clientY };
+    if (!hit) return;
+    const u = hit.o.userData;
+    if (u.draggable) {
+      this.controls.enabled = false;
+      const wp = hit.o.getWorldPosition(new THREE.Vector3());
+      const n = new THREE.Vector3(0, 0, 1).transformDirection(this.root.matrixWorld);
+      this.plane.setFromNormalAndCoplanarPoint(n, wp);
+      const p = new THREE.Vector3(); this.ray.ray.intersectPlane(this.plane, p);
+      this.drag = { o: hit.o, offset: wp.sub(p) };
+      this.host.classList.add('grabbing');
+    } else if (u.paint) {
+      this.controls.enabled = false; this.painting = true; this.lastPainted = hit.o; u.paint(hit.o);
+    } else if (u.onClick) {
+      this.controls.enabled = false; this.clicking = hit.o;
+    }
+  }
+  move(e) {
+    if (!this.active) return;
+    if (this.drag) {
+      this.setNDC(e);
+      const p = new THREE.Vector3();
+      if (!this.ray.ray.intersectPlane(this.plane, p)) return;
+      p.add(this.drag.offset);
+      const o = this.drag.o, local = o.parent.worldToLocal(p), b = o.userData.bounds;
+      o.position.x = b ? clamp(local.x, b.x[0], b.x[1]) : local.x;
+      o.position.y = b ? clamp(local.y, b.y[0], b.y[1]) : local.y;
+      o.userData.onDrag && o.userData.onDrag(o);
+      return;
+    }
+    if (this.painting) {
+      this.setNDC(e); const hit = this.hitTest();
+      if (hit && hit.o !== this.lastPainted && hit.o.userData.paint) { this.lastPainted = hit.o; hit.o.userData.paint(hit.o); }
+      return;
+    }
+    if (!this.ext && e.target === this.renderer.domElement && e.pointerType === 'mouse') {
+      this.setNDC(e); const hit = this.hitTest();
+      this.renderer.domElement.style.cursor = hit ? (hit.o.userData.draggable ? 'grab' : 'pointer') : 'default';
+    }
+  }
+  up(e) {
+    const moved = this.downAt ? Math.hypot(e.clientX - this.downAt.x, e.clientY - this.downAt.y) : 99;
+    if (this.drag) { const o = this.drag.o; if (moved < 5 && o.userData.onClick) o.userData.onClick(o); o.userData.onDrop && o.userData.onDrop(o); this.drag = null; }
+    if (this.clicking) { if (moved < 8) this.clicking.userData.onClick(this.clicking); this.clicking = null; }
+    this.painting = false; this.controls.enabled = true; this.host.classList.remove('grabbing');
+  }
+  setupXRController() {
+    const ctrl = this.renderer.xr.getController(0);
+    this.scene.add(ctrl);
+    ctrl.addEventListener('select', () => {
+      const m = new THREE.Matrix4().extractRotation(ctrl.matrixWorld);
+      this.ray.ray.origin.setFromMatrixPosition(ctrl.matrixWorld);
+      this.ray.ray.direction.set(0, 0, -1).applyMatrix4(m);
+      const hit = this.hitTest(); if (!hit) return;
+      const u = hit.o.userData;
+      if (u.paint) u.paint(hit.o); else if (u.onClick) u.onClick(hit.o);
+    });
+  }
+  async startAR(overlay, onEnd) {
+    const session = await navigator.xr.requestSession('immersive-ar', { optionalFeatures: ['dom-overlay'], domOverlay: { root: overlay } });
+    this.renderer.xr.setReferenceSpaceType('local');
+    await this.renderer.xr.setSession(session);
+    this.root.scale.setScalar(.055); this.root.position.set(0, -.12, -.85);
+    this.board.material.transparent = true; this.board.material.opacity = .5;
+    session.addEventListener('end', () => {
+      this.root.scale.setScalar(1); this.root.position.set(0, 0, 0);
+      this.board.material.opacity = 1; this.board.material.transparent = false;
+      this.resize(); onEnd && onEnd();
+    });
+    return session;
+  }
+}
+
+
+/* =========================================================
+   UI control builders
+   ========================================================= */
+function slider({ label, min, max, step, value, fmt = v => v, onInput }) {
+  const out = h('output', {}, fmt(value));
+  const inp = h('input', { type: 'range', min, max, step, value, 'aria-label': label });
+  inp.addEventListener('input', () => { const v = parseFloat(inp.value); out.textContent = fmt(v); onInput(v); });
+  const el = h('label', { class: 'ctl' }, h('span', { class: 'ctl-l' }, label, out), inp);
+  el.set = v => { inp.value = v; out.textContent = fmt(v); };
+  return el;
+}
+function swatches({ label, items, value, onPick }) {
+  const wrap = h('div', { class: 'sw', role: 'group', 'aria-label': label });
+  const set = key => [...wrap.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === key)));
+  items.forEach(it => wrap.append(h('button', { 'data-k': it.key, title: it.name, 'aria-label': it.name, style: `background:${it.color}`, onclick: () => { set(it.key); onPick(it.key); } })));
+  set(value);
+  const el = h('div', { class: 'ctl' }, h('span', { class: 'ctl-l' }, label), wrap);
+  el.set = set; return el;
+}
+function seg({ label, items, value, onPick }) {
+  const wrap = h('div', { class: 'seg', role: 'group', 'aria-label': label || '' });
+  const set = key => [...wrap.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === key)));
+  items.forEach(it => wrap.append(h('button', { 'data-k': it.key, onclick: () => { set(it.key); onPick(it.key); } }, it.name)));
+  set(value);
+  const el = label ? h('div', { class: 'ctl' }, h('span', { class: 'ctl-l' }, label), wrap) : wrap;
+  el.set = set; return el;
+}
+function toggle({ label, value, onChange }) {
+  const inp = h('input', { type: 'checkbox' }); inp.checked = !!value;
+  inp.addEventListener('change', () => onChange(inp.checked));
+  return h('label', { class: 'tgl' }, h('span', {}, label), inp);
+}
+const buttons = list => h('div', { class: 'row' }, list.map(b => h('button', { class: 'btn ghost sm', onclick: b.fn }, b.label)));
+
+
+/* =========================================================
+   Color science (RYB artist's wheel + digital conversions)
+   ========================================================= */
+// 12-hue RYB wheel (Itten). Index 0 = Merah, clockwise.
+const WHEEL = [
+  { k: 'merah', n: 'Merah', hex: '#E32322' },
+  { k: 'merah-jingga', n: 'Merah-Jingga', hex: '#EA621F' },
+  { k: 'jingga', n: 'Jingga', hex: '#F18E1C' },
+  { k: 'kuning-jingga', n: 'Kuning-Jingga', hex: '#FDC60B' },
+  { k: 'kuning', n: 'Kuning', hex: '#F4E500' },
+  { k: 'kuning-hijau', n: 'Kuning-Hijau', hex: '#8CBB26' },
+  { k: 'hijau', n: 'Hijau', hex: '#008E5B' },
+  { k: 'biru-hijau', n: 'Biru-Hijau', hex: '#0696BB' },
+  { k: 'biru', n: 'Biru', hex: '#2A71B0' },
+  { k: 'biru-ungu', n: 'Biru-Ungu', hex: '#444E99' },
+  { k: 'ungu', n: 'Ungu', hex: '#6D398B' },
+  { k: 'merah-ungu', n: 'Merah-Ungu', hex: '#C4037D' }
+];
+WHEEL.forEach((w, i) => {
+  w.i = i;
+  w.cat = i % 4 === 0 ? 'primer' : i % 2 === 0 ? 'sekunder' : 'tersier';
+  w.temp = i <= 4 ? 'hangat' : (i === 5 || i === 11) ? 'transisi' : 'dingin';
+});
+const wrap12 = i => ((i % 12) + 12) % 12;
+const CAT_TXT = { primer: 'Primer: tidak dapat dibuat dari campuran warna lain (model RYB)', sekunder: 'Sekunder: campuran dua warna primer', tersier: 'Tersier: campuran warna primer dengan warna sekunder di sebelahnya' };
+const TEMP_TXT = { hangat: 'Hangat', dingin: 'Dingin', transisi: 'Transisi (bisa terasa hangat atau dingin tergantung pasangannya)' };
+
+function hexToHsl(hex) {
+  const [r, g, b] = (hexToRgb(hex) || [0, 0, 0]).map(v => v / 255);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+  let h = 0, s = 0;
+  if (mx !== mn) {
+    const d = mx - mn;
+    s = l > .5 ? d / (2 - mx - mn) : d / (mx + mn);
+    h = mx === r ? (g - b) / d + (g < b ? 6 : 0) : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    h *= 60;
+  }
+  return { h, s, l };
+}
+function hslToHex(h, s, l) {
+  h = ((h % 360) + 360) % 360; s = clamp(s, 0, 1); l = clamp(l, 0, 1);
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2;
+  const [r, g, b] = h < 60 ? [c, x, 0] : h < 120 ? [x, c, 0] : h < 180 ? [0, c, x] : h < 240 ? [0, x, c] : h < 300 ? [x, 0, c] : [c, 0, x];
+  return '#' + [r, g, b].map(v => Math.round((v + m) * 255).toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+function mixHex(a, b, t) {
+  const A = hexToRgb(a), B = hexToRgb(b);
+  return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join('').toUpperCase();
+}
+const tint = (hex, t) => mixHex(hex, '#FFFFFF', t);
+const shade = (hex, t) => mixHex(hex, '#000000', t);
+/** CIE L* (perceived lightness / value), 0–100 */
+function lstar(hex) {
+  const Y = luminance(hex);
+  return Y > 216 / 24389 ? 116 * Math.cbrt(Y) - 16 : Y * 24389 / 27;
+}
+/** Gray with the same luminance (for the grayscale/value check) */
+function grayOf(hex) {
+  const Y = luminance(hex);
+  const v = Y <= .0031308 ? 12.92 * Y : 1.055 * Math.pow(Y, 1 / 2.4) - .055;
+  const c = Math.round(clamp(v, 0, 1) * 255).toString(16).padStart(2, '0');
+  return ('#' + c + c + c).toUpperCase();
+}
+const bestText = bg => contrast(bg, '#151515') >= contrast(bg, '#FFFFFF') ? '#151515' : '#FFFFFF';
+function grade(r) {
+  if (r >= 7) return { g: 'AAA', t: 'Sangat mudah dibaca', ok: true };
+  if (r >= 4.5) return { g: 'AA', t: 'Mudah dibaca untuk teks biasa', ok: true };
+  if (r >= 3) return { g: 'AA teks besar', t: 'Hanya layak untuk teks besar/judul', ok: false };
+  return { g: 'Gagal', t: 'Sulit dibaca', ok: false };
+}
+const ratioTxt = r => num(r, 1).replace(',0', '') + ':1';
+
+/* --- map digital HSL hue ⇄ RYB wheel angle, so harmonies follow the RYB wheel --- */
+const RYB_H = WHEEL.map(w => hexToHsl(w.hex).h); // HSL hue of each wheel step
+function hueToRyb(h) {
+  h = ((h % 360) + 360) % 360;
+  for (let i = 0; i < 12; i++) {
+    const a = RYB_H[i], b = i === 11 ? RYB_H[0] + 360 : RYB_H[i + 1];
+    let hh = h; if (i === 11 && hh < a) hh += 360;
+    if (hh >= a && hh <= b) return (i + (hh - a) / (b - a)) * 30;
+  }
+  return 0;
+}
+function rybToHue(r) {
+  r = ((r % 360) + 360) % 360;
+  const i = Math.floor(r / 30), t = (r - i * 30) / 30;
+  const a = RYB_H[i], b = i === 11 ? RYB_H[0] + 360 : RYB_H[i + 1];
+  return (a + (b - a) * t) % 360;
+}
+/** Human-readable Indonesian color name for any hex. */
+function nameOf(hex) {
+  const { h, s, l } = hexToHsl(hex);
+  if (l >= .94) return 'Putih';
+  if (l <= .09) return 'Hitam';
+  if (s < .12) return l > .7 ? 'Abu-abu muda' : l < .35 ? 'Abu-abu tua' : 'Abu-abu';
+  if (h >= 12 && h <= 45 && l < .42 && s < .85) return l < .25 ? 'Coklat tua' : 'Coklat';
+  const idx = Math.round(hueToRyb(h) / 30) % 12;
+  let n = WHEEL[idx].n;
+  if (l > .78) n += ' pastel'; else if (l > .64) n += ' muda'; else if (l < .26) n += ' tua';
+  if (s < .35 && l <= .78 && l >= .26) n += ' kusam';
+  return n;
+}
+/** Subtractive (pigment) mixing on the RYB wheel. */
+function mixRYB(a, b) {
+  if (a === b) return { i: a, kind: 'sama', hex: WHEEL[a].hex, n: WHEEL[a].n, txt: 'Mencampur warna yang sama menghasilkan warna itu sendiri.' };
+  const pa = a % 4 === 0, pb = b % 4 === 0, d = wrap12(b - a), dd = Math.min(d, 12 - d);
+  if (pa && pb) { const m = d === 4 ? wrap12(a + 2) : wrap12(b + 2); return { i: m, kind: 'sekunder', hex: WHEEL[m].hex, n: WHEEL[m].n, txt: `${WHEEL[a].n} + ${WHEEL[b].n} = ${WHEEL[m].n}: warna sekunder.` }; }
+  if (dd === 2 && (pa || pb)) { const m = d === 2 ? wrap12(a + 1) : wrap12(b + 1); return { i: m, kind: 'tersier', hex: WHEEL[m].hex, n: WHEEL[m].n, txt: `${WHEEL[a].n} + ${WHEEL[b].n} = ${WHEEL[m].n}: warna tersier (primer + sekunder di sebelahnya).` }; }
+  if (dd === 1) { const m = WHEEL[pa ? a : pb ? b : a]; return { i: null, kind: 'antara', hex: mixHex(WHEEL[a].hex, WHEEL[b].hex, .5), n: 'Antara ' + WHEEL[a].n + ' dan ' + WHEEL[b].n, txt: 'Dua warna yang bertetangga menghasilkan nuansa di antara keduanya.' }; }
+  const grey = shade(mixHex(WHEEL[a].hex, WHEEL[b].hex, .5), .25);
+  return { i: null, kind: 'netral', hex: dd === 6 ? '#5B5249' : grey, n: dd === 6 ? 'Coklat keabu-abuan' : 'Warna kusam', txt: dd === 6 ? 'Warna komplementer saling menetralkan: campurannya menjadi coklat/abu-abu kusam.' : 'Warna yang berjauhan pada roda menghasilkan warna kusam karena saling menetralkan.' };
+}
+/** Harmony indices on the 12-step wheel */
+const HARM = {
+  komplementer: i => [i, wrap12(i + 6)],
+  analog: i => [wrap12(i - 1), i, wrap12(i + 1)],
+  triadik: i => [i, wrap12(i + 4), wrap12(i + 8)]
+};
+const HARM_TXT = {
+  komplementer: 'Dua warna yang berseberangan pada roda. Kontrasnya paling kuat, sehingga cocok untuk menonjolkan satu elemen (misalnya tombol aksi). Pakai satu warna sebagai dominan dan satu sebagai aksen agar tidak saling berebut perhatian.',
+  analog: 'Tiga warna yang bersebelahan pada roda. Kesannya harmonis dan tenang karena hue-nya berdekatan. Butuh perbedaan value agar komposisi tidak datar.',
+  triadik: 'Tiga warna yang berjarak sama (120°) pada roda. Kesannya seimbang dan hidup. Biasanya satu warna dominan, dua lainnya sebagai pendukung dan aksen.'
+};
+
+/** Color-accurate material: emissive keeps the displayed color close to its HEX under scene lighting. */
+const cmat = (c, o = {}) => mat(c, { emissive: c, emissiveIntensity: .32, roughness: .65, ...o });
+const paint = (m, hex) => { m.color.set(hex); if (m.emissive) m.emissive.set(hex); };
+/* =========================================================
+   Text textures + 3D design mockups
+   ========================================================= */
+const FONT = "'Plus Jakarta Sans', 'Inter', system-ui, sans-serif";
+function textTexture(w, h, draw) {
+  const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+  const g = cv.getContext('2d'); draw(g, w, h);
+  const t = new THREE.CanvasTexture(cv); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+  return t;
+}
+function labelMesh(text, { w = 2, h = .5, color = '#151515', size = 64, weight = 800, align = 'center' } = {}) {
+  const tex = textTexture(512, Math.round(512 * h / w), (g, W, H) => {
+    g.fillStyle = color; g.font = `${weight} ${size}px ${FONT}`; g.textAlign = align; g.textBaseline = 'middle';
+    g.fillText(text, align === 'center' ? W / 2 : 10, H / 2);
+  });
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false }));
+  return m;
+}
+/**
+ * A simple poster / promo card. apply({bg, dom, sec, acc, text, title, sub, cta, gray})
+ * Roles follow the 60-30-10 idea: bg (≈60%), dom/sec (≈30%), acc (≈10%).
+ */
+function makePoster(w = 4, h = 5.4) {
+  const g = new THREE.Group();
+  const board = shadowy(new THREE.Mesh(new THREE.BoxGeometry(w, h, .14), cmat('#ffffff')));
+  const circle = shadowy(new THREE.Mesh(new THREE.CylinderGeometry(w * .3, w * .3, .08, 64), cmat('#cccccc')));
+  circle.rotation.x = Math.PI / 2; circle.position.set(w * .16, h * .22, .1);
+  const dot = shadowy(new THREE.Mesh(new THREE.CylinderGeometry(w * .12, w * .12, .1, 48), cmat('#999999')));
+  dot.rotation.x = Math.PI / 2; dot.position.set(-w * .24, h * .33, .14);
+  const band = shadowy(new THREE.Mesh(new THREE.BoxGeometry(w * .84, h * .035, .06), cmat('#cccccc')));
+  band.position.set(0, -h * .05, .1);
+  const cta = shadowy(new THREE.Mesh(extrude(rrShape(w * .48, h * .095, .14), .12, false), cmat('#cccccc')));
+  cta.position.set(-w * .17, -h * .36, .14);
+  const title = new THREE.Mesh(new THREE.PlaneGeometry(w * .88, h * .22), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false }));
+  title.position.set(0, -h * .17, .11);
+  const ctaTxt = new THREE.Mesh(new THREE.PlaneGeometry(w * .48, h * .095), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false }));
+  ctaTxt.position.set(-w * .17, -h * .36, .21);
+  g.add(board, circle, dot, band, cta, title, ctaTxt);
+  g.userData.parts = { board, circle, dot, band, cta };
+  g.userData.apply = (p) => {
+    const G = p.gray ? grayOf : (x => x);
+    paint(board.material, G(p.bg)); paint(circle.material, G(p.dom)); paint(dot.material, G(p.sec || p.dom));
+    paint(band.material, G(p.sec || p.acc)); paint(cta.material, G(p.acc));
+    const txt = G(p.text || bestText(p.bg));
+    if (title.material.map) title.material.map.dispose();
+    title.material.map = textTexture(1024, 256, (c, W, H) => {
+      c.fillStyle = txt; c.textBaseline = 'alphabetic';
+      c.font = `800 ${p.titleSize || 96}px ${FONT}`; c.fillText(p.title || 'SUMMER SALE', 18, 112);
+      c.font = `600 44px ${FONT}`; c.fillText(p.sub || 'Diskon hingga 50% · hari ini saja', 22, 196);
+    });
+    title.material.needsUpdate = true;
+    if (ctaTxt.material.map) ctaTxt.material.map.dispose();
+    const ct = G(bestText(p.acc));
+    ctaTxt.material.map = textTexture(512, 128, (c, W, H) => { c.fillStyle = ct; c.font = `800 52px ${FONT}`; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(p.cta || 'Beli sekarang', W / 2, H / 2 + 2); });
+    ctaTxt.material.needsUpdate = true;
+  };
+  return g;
+}
+/** A drink can mockup: body color + label band */
+function makeCan() {
+  const g = new THREE.Group();
+  const body = shadowy(new THREE.Mesh(new THREE.CylinderGeometry(.85, .85, 2.7, 48), cmat('#cccccc', { metalness: .2, roughness: .4 })));
+  const band = shadowy(new THREE.Mesh(new THREE.CylinderGeometry(.865, .865, .9, 48), cmat('#ffffff')));
+  const top = shadowy(new THREE.Mesh(new THREE.CylinderGeometry(.75, .85, .12, 48), mat('#d6d6d6', { metalness: .6, roughness: .3 })));
+  top.position.y = 1.41; band.position.y = -.2;
+  g.add(body, band, top);
+  g.rotation.x = .35;
+  g.userData.apply = (c, accent) => { paint(body.material, c); paint(band.material, accent || bestText(c) === '#151515' ? '#151515' : '#ffffff'); };
+  return g;
+}
+/** 3D RYB wheel. Heights encode hierarchy: primer > sekunder > tersier. */
+function buildWheel(stage, { r1 = 1.6, r2 = 3, cx = 0, cy = 0, onPick, hier = true } = {}) {
+  const wedges = [];
+  WHEEL.forEach((w, i) => {
+    const mid = rad(90 - i * 30), a0 = mid - rad(14.2), a1 = mid + rad(14.2);
+    const d = hier ? (w.cat === 'primer' ? .55 : w.cat === 'sekunder' ? .4 : .26) : .3;
+    const m = shadowy(new THREE.Mesh(extrude(arcShape(r1, r2, a0, a1), d, true), cmat(w.hex)));
+    m.position.set(cx, cy, d / 2); m.userData = { interactive: true, i, d, baseZ: d / 2, onClick: () => onPick && onPick(i) };
+    stage.add(m, true); wedges.push(m);
+  });
+  const lift = (sel) => wedges.forEach((m, i) => {
+    const on = Array.isArray(sel) ? sel.includes(i) : sel === i;
+    const tz = m.userData.baseZ + (on ? .45 : 0), z0 = m.position.z;
+    if (Math.abs(tz - z0) > .001) stage.animate(220, k => m.position.z = z0 + (tz - z0) * k);
+  });
+  return { wedges, lift };
+}
+
+/* =========================================================
+   Learning modules
+   ========================================================= */
+const KEYS = ['roda', 'suhu', 'harmoni', 'kontras', 'psikologi'];
+const NAMES = { roda: 'Roda Warna', suhu: 'Hangat & Dingin', harmoni: 'Harmoni Warna', kontras: 'Kontras Warna', psikologi: 'Psikologi Warna' };
+const IDN = { roda: 'Primer · Sekunder · Tersier', suhu: 'Suhu warna', harmoni: 'Komplementer · Analog · Triadik', kontras: 'Hue · Value · Saturation', psikologi: 'Asosiasi & konteks' };
+const PCOL = { roda: '#ff4757', suhu: '#ff9f1c', harmoni: '#8b5cf6', kontras: '#2e6bff', psikologi: '#10b981', intro: '#ffbe0b' };
+const PFG = { roda: '#ffffff', suhu: '#151515', harmoni: '#ffffff', kontras: '#ffffff', psikologi: '#151515', intro: '#151515' };
+const PTINT = { roda: '#ffe3e6', suhu: '#fff0dc', harmoni: '#eee6ff', kontras: '#e3ebff', psikologi: '#dcf5ec', intro: '#fff1d6' };
+const ICON = {
+  roda: `<svg viewBox="0 0 60 40">${WHEEL.map((w, i) => { const a0 = (i * 30 - 105) * Math.PI / 180, a1 = (i * 30 - 75) * Math.PI / 180; return `<path d="M30 20 L${30 + 17 * Math.cos(a0)} ${20 + 17 * Math.sin(a0)} A17 17 0 0 1 ${30 + 17 * Math.cos(a1)} ${20 + 17 * Math.sin(a1)}Z" fill="${w.hex}"/>`; }).join('')}<circle cx="30" cy="20" r="6" fill="#fff"/></svg>`,
+  suhu: `<svg viewBox="0 0 60 40"><rect x="6" y="6" width="22" height="28" rx="5" fill="#F18E1C"/><rect x="32" y="6" width="22" height="28" rx="5" fill="#2A71B0"/><text x="17" y="25" font-size="12" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="700">H</text><text x="43" y="25" font-size="12" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="700">D</text></svg>`,
+  harmoni: `<svg viewBox="0 0 60 40"><circle cx="30" cy="20" r="15" fill="none" stroke="#151515" stroke-width="2"/><circle cx="30" cy="5" r="5" fill="#E32322"/><circle cx="43" cy="27.5" r="5" fill="#F4E500" stroke="#151515" stroke-width="1"/><circle cx="17" cy="27.5" r="5" fill="#2A71B0"/></svg>`,
+  kontras: `<svg viewBox="0 0 60 40"><rect x="4" y="4" width="26" height="32" rx="4" fill="#151515"/><rect x="30" y="4" width="26" height="32" rx="4" fill="#F4E500"/><text x="17" y="26" font-size="14" text-anchor="middle" fill="#F4E500" font-family="sans-serif" font-weight="800">Aa</text><text x="43" y="26" font-size="14" text-anchor="middle" fill="#151515" font-family="sans-serif" font-weight="800">Aa</text></svg>`,
+  psikologi: `<svg viewBox="0 0 60 40"><circle cx="16" cy="20" r="9" fill="#E32322"/><circle cx="30" cy="20" r="9" fill="#2A71B0"/><circle cx="44" cy="20" r="9" fill="#008E5B"/><path d="M12 19 q4 4 8 0 M26 21 h8 M40 21 q4 -3 8 0" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`
+};
+const PRIN = {};
+
+/* ---------- 1. RODA WARNA ---------- */
+PRIN.roda = {
+  short: 'Primer, sekunder, tersier pada 12 warna',
+  def: 'Roda warna menyusun warna berdasarkan hubungannya. Pada roda RYB yang lazim di seni rupa dan desain, terdapat 3 warna primer (merah, kuning, biru), 3 sekunder hasil campuran dua primer (jingga, hijau, ungu), dan 6 tersier hasil campuran primer dengan sekunder di sebelahnya.',
+  note: '<b>Kunci</b>Tinggi irisan pada roda 3D ini menunjukkan tingkatnya: primer paling tinggi, lalu sekunder, lalu tersier. Catatan: layar digital memakai model cahaya RGB (merah, hijau, biru) dan percetakan memakai CMYK. Roda RYB dipakai di sini karena menjadi dasar teori harmoni dalam pendidikan desain.',
+  mission: 'Pakai <b>pencampur warna</b>: klik dua irisan roda untuk mencampurnya. Temukan <b>ketiga warna sekunder</b> (jingga, hijau, ungu).',
+  examples: ['Memahami asal warna membantu memprediksi hasil campuran cat, tinta, atau pigmen.', 'Nama tersier (misalnya biru-hijau) memudahkan komunikasi warna dengan klien dan percetakan.', 'Posisi warna pada roda menjadi dasar semua skema harmoni (komplementer, analog, triadik).', 'Kode HEX menyatakan warna untuk media digital; setiap irisan di sini punya kode HEX-nya.'],
+  hint: 'Klik irisan roda untuk melihat info dan mencampur · putar untuk melihat tingkat primer/sekunder/tersier',
+  build(ctx) {
+    const { stage } = ctx;
+    stage.setBoard(PTINT.roda); stage.setView(7.6, 7.2);
+    const center = shadowy(new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.35, .3, 64), cmat('#ffffff')));
+    center.rotation.x = Math.PI / 2; center.position.z = .15; stage.add(center);
+    const slots = [null, null];
+    const found = new Set();
+    const wheel = buildWheel(stage, { onPick: pick });
+    const slotEls = [h('div', { class: 'mslot' }, '?'), h('div', { class: 'mslot' }, '?')], resEl = h('div', { class: 'mslot res' }, '?');
+    const resTxt = h('p', { class: 'hint', style: 'margin:6px 0 0' }, 'Klik irisan pertama, lalu irisan kedua.');
+    const foundEl = h('div', { class: 'found' });
+    const paintSlot = (el, hex, label) => { el.style.background = hex || '#fff'; el.style.color = hex ? bestText(hex) : 'var(--muted)'; el.textContent = label || '?'; };
+    function renderFound() {
+      foundEl.innerHTML = '';
+      [2, 6, 10].forEach(i => foundEl.append(h('span', { class: 'fchip' + (found.has(i) ? ' on' : ''), style: found.has(i) ? `background:${WHEEL[i].hex};color:${bestText(WHEEL[i].hex)}` : '' }, (found.has(i) ? '✓ ' : '') + WHEEL[i].n)));
+    }
+    function info(i) {
+      const w = WHEEL[i], c = WHEEL[wrap12(i + 6)];
+      ctx.readout('Warna dipilih', `${w.n} · ${w.hex}`, `${CAT_TXT[w.cat]}. Suhu: ${TEMP_TXT[w.temp]}. Komplemennya: ${c.n} (${c.hex}).`);
+    }
+    function pick(i) {
+      info(i);
+      const k = slots[0] == null || slots[1] != null ? 0 : 1;
+      if (k === 0) { slots[0] = i; slots[1] = null; paintSlot(slotEls[1], null); paintSlot(resEl, null); }
+      else slots[1] = i;
+      paintSlot(slotEls[k], WHEEL[i].hex, WHEEL[i].n);
+      wheel.lift(slots.filter(x => x != null));
+      if (slots[1] != null) {
+        const r = mixRYB(slots[0], slots[1]);
+        paintSlot(resEl, r.hex, r.n); resTxt.textContent = r.txt;
+        paint(center.material, r.hex); stage.pulse(center, .12);
+        if (r.kind === 'sekunder') { found.add(r.i); renderFound(); }
+        if (r.i != null) setTimeout(() => wheel.lift([slots[0], slots[1], r.i].filter(x => x != null)), 240);
+        if (found.size === 3) ctx.done();
+      } else resTxt.textContent = 'Sekarang klik irisan kedua.';
+    }
+    ctx.controls.append(
+      h('div', { class: 'ctl' }, h('span', { class: 'ctl-l' }, 'Pencampur warna (pigmen)'),
+        h('div', { class: 'mixer' }, slotEls[0], h('b', {}, '+'), slotEls[1], h('b', {}, '='), resEl), resTxt),
+      h('div', { class: 'ctl' }, h('span', { class: 'ctl-l' }, 'Warna sekunder ditemukan'), foundEl),
+      buttons([{ label: 'Kosongkan campuran', fn: () => { slots[0] = slots[1] = null; slotEls.forEach(e => paintSlot(e, null)); paintSlot(resEl, null); paint(center.material, '#ffffff'); wheel.lift([]); resTxt.textContent = 'Klik irisan pertama, lalu irisan kedua.'; } }]));
+    renderFound();
+    ctx.readout('Roda warna RYB', '12 warna', 'Klik irisan mana saja untuk melihat nama, kode HEX, kategori, suhu, dan komplemennya.');
+    ctx.ar([{ label: 'Merah + Kuning', fn: () => { slots[0] = slots[1] = null; pick(0); pick(4); } }, { label: 'Kuning + Biru', fn: () => { slots[0] = slots[1] = null; pick(4); pick(8); } }, { label: 'Biru + Merah', fn: () => { slots[0] = slots[1] = null; pick(8); pick(0); } }]);
+  }
+};
+
+/* ---------- 2. HANGAT & DINGIN ---------- */
+PRIN.suhu = {
+  short: 'Hangat terasa aktif, dingin terasa tenang',
+  def: 'Roda warna dapat dibelah menjadi sisi hangat (merah, jingga, kuning) dan sisi dingin (hijau, biru, ungu). Warna hangat cenderung terasa aktif dan tampak lebih “maju”, sedangkan warna dingin cenderung terasa tenang dan tampak “mundur”.',
+  note: '<b>Kunci</b>Suhu warna bersifat relatif. Kuning-hijau dan merah-ungu berada di perbatasan: keduanya bisa terasa hangat atau dingin tergantung warna di sekitarnya. Bahkan abu-abu bisa tampak hangat di samping biru.',
+  mission: 'Seret kedelapan ubin warna ke zona yang tepat: <b>Hangat</b>, <b>Transisi</b>, atau <b>Dingin</b>.',
+  examples: ['Poster musim panas memakai dominan hangat; layanan kesehatan sering memakai dominan dingin.', 'Aksen hangat di atas latar dingin membuat tombol aksi tampak maju dan menonjol.', 'Ilustrasi pemandangan memakai warna dingin di latar jauh untuk menciptakan kesan kedalaman.', 'Foto produk makanan biasanya digrading ke arah hangat agar terlihat menggugah selera.'],
+  hint: 'Seret ubin warna ke zona Hangat, Transisi, atau Dingin',
+  build(ctx) {
+    const { stage } = ctx;
+    stage.setBoard(PTINT.suhu); stage.setView(11.5, 8);
+    const ZONES = [{ k: 'hangat', n: 'HANGAT', x: -3.9, c: '#ffd6b8' }, { k: 'transisi', n: 'TRANSISI', x: 0, c: '#eeeeee' }, { k: 'dingin', n: 'DINGIN', x: 3.9, c: '#cfe0ff' }];
+    ZONES.forEach(z => {
+      const p = new THREE.Mesh(extrude(rrShape(3.5, 3.4, .35), .06, false), mat(z.c, { roughness: 1 }));
+      p.position.set(z.x, -1.6, -.2); p.receiveShadow = true; stage.add(p);
+      const l = labelMesh(z.n, { w: 2.6, h: .5, size: 70 }); l.position.set(z.x, .3, -.1); stage.add(l);
+    });
+    const TILES = [0, 2, 4, 5, 6, 8, 10, 11];
+    const order = TILES.slice().sort(() => Math.random() - .5);
+    const bounds = { x: [-5.6, 5.6], y: [-3.4, 3.6] };
+    const tiles = order.map((wi, j) => {
+      const g = new THREE.Group();
+      const m = shadowy(new THREE.Mesh(extrude(rrShape(1.05, 1.05, .2), .3, true), cmat(WHEEL[wi].hex)));
+      const mark = new THREE.Mesh(new THREE.SphereGeometry(.16, 16, 12), new THREE.MeshBasicMaterial({ color: '#ffffff' }));
+      mark.position.set(.42, .42, .25); mark.visible = false;
+      g.add(m, mark); g.position.set(-4.9 + j * 1.4, 2.7, .2);
+      g.userData = { interactive: true, draggable: true, bounds, wi, zone: null, mark, onDrop: drop, home: g.position.clone() };
+      return stage.add(g, true);
+    });
+    const zoneOf = p => p.y > .6 ? null : p.x < -1.9 ? 'hangat' : p.x > 1.9 ? 'dingin' : 'transisi';
+    function drop(g) {
+      const z = zoneOf(g.position), w = WHEEL[g.userData.wi];
+      g.userData.zone = z;
+      if (!z) { g.userData.mark.visible = false; return update(); }
+      const ok = z === w.temp;
+      g.userData.mark.visible = true; g.userData.mark.material.color.set(ok ? '#10b981' : '#e23b2e');
+      stage.pulse(g, .12);
+      const why = w.temp === 'transisi'
+        ? `${w.n} berada di perbatasan sisi hangat dan dingin, jadi kesannya bergantung pada warna di sekitarnya.`
+        : `${w.n} berada di sisi ${w.temp} roda warna${w.temp === 'hangat' ? ' (keluarga merah–kuning)' : ' (keluarga hijau–ungu)'}.`;
+      update(ok ? `✓ ${w.n} → ${z}` : `✗ ${w.n} bukan ${z}`, why);
+    }
+    function update(big, small) {
+      const placed = tiles.filter(t => t.userData.zone), right = placed.filter(t => t.userData.zone === WHEEL[t.userData.wi].temp);
+      ctx.readout(`Benar: ${right.length}/8 · ditempatkan: ${placed.length}/8`, big || 'Seret ubin ke zona', small || 'Coba tebak dulu, lalu lihat umpan baliknya pada setiap ubin.');
+      if (right.length === 8) ctx.done();
+    }
+    const reset = () => { tiles.forEach(t => { const s = t.position.clone(), d = t.userData.home; stage.animate(350, k => t.position.lerpVectors(s, d, k)); t.userData.zone = null; t.userData.mark.visible = false; }); setTimeout(() => update(), 360); };
+    const solve = () => { const cnt = { hangat: 0, transisi: 0, dingin: 0 }; tiles.forEach(t => { const z = WHEEL[t.userData.wi].temp, zx = ZONES.find(q => q.k === z).x; const tp = new THREE.Vector3(zx - .6 + (cnt[z] % 2) * 1.2, -1.0 - Math.floor(cnt[z] / 2) * 1.2, .2); cnt[z]++; const s = t.position.clone(); stage.animate(400, k => t.position.lerpVectors(s, tp, k)); setTimeout(() => drop(t), 420); }); };
+    ctx.controls.append(h('p', { class: 'hint', style: 'margin:0' }, 'Bulatan kecil pada ubin menunjukkan hasilnya: hijau berarti benar, merah berarti belum tepat.'), buttons([{ label: 'Kembalikan ubin', fn: reset }]));
+    ctx.ar([{ label: 'Tunjukkan jawaban', fn: solve }, { label: 'Kembalikan ubin', fn: reset }]);
+    update();
+  }
+};
+
+/* ---------- 3. HARMONI ---------- */
+PRIN.harmoni = {
+  short: 'Skema warna dari posisi pada roda',
+  def: 'Harmoni warna adalah kombinasi yang terasa seimbang karena dipilih berdasarkan posisi pada roda. Komplementer memakai dua warna berseberangan, analog memakai tiga warna bersebelahan, dan triadik memakai tiga warna berjarak sama.',
+  note: '<b>Kunci</b>Harmoni bukan hanya soal hue. Proporsi juga menentukan: aturan 60-30-10 (warna dominan sekitar 60%, pendukung 30%, aksen 10%) membuat skema yang sama terasa jauh lebih rapi. Matikan dan nyalakan opsi 60-30-10 untuk membandingkannya.',
+  mission: 'Buat dan simpan <b>tiga studi palet</b> pada poster: satu komplementer, satu analog, dan satu triadik.',
+  steps: ['Studi komplementer', 'Studi analog', 'Studi triadik'],
+  examples: ['Komplementer: tombol jingga di atas antarmuka biru langsung menarik perhatian.', 'Analog: identitas brand teh herbal dengan hijau, kuning-hijau, dan biru-hijau.', 'Triadik: poster acara anak yang ceria dengan merah, kuning, dan biru.', '60-30-10: latar netral terang 60%, warna brand 30%, aksen kontras 10% untuk tombol.'],
+  hint: 'Klik roda untuk memilih warna utama · lihat palet diterapkan pada poster',
+  build(ctx) {
+    const { stage } = ctx;
+    stage.setBoard(PTINT.harmoni); stage.setView(11, 6.6);
+    const st = { base: 8, type: 'komplementer', light: 0, rule: true, saved: new Set() };
+    const wheel = buildWheel(stage, { r1: 1.05, r2: 2.05, cx: -3, cy: 0, onPick: i => { st.base = i; segB.set(String(i)); update(); } });
+    const poster = makePoster(3.6, 4.9); poster.position.set(2.6, 0, .1); stage.add(poster);
+    const pins = [];
+    for (let k = 0; k < 3; k++) { const p = new THREE.Mesh(new THREE.SphereGeometry(.2, 20, 14), mat('#ffffff')); p.castShadow = true; stage.add(p); pins.push(p); }
+    const adj = hex => st.light > 0 ? tint(hex, st.light) : st.light < 0 ? shade(hex, -st.light) : hex;
+    const palEl = h('div', { class: 'pal' });
+    function palette() {
+      const idx = HARM[st.type](st.base);
+      const cols = idx.map(i => adj(WHEEL[i].hex));
+      const baseHex = adj(WHEEL[st.base].hex);
+      const others = idx.filter(i => i !== st.base).map(i => adj(WHEEL[i].hex));
+      let p;
+      if (st.rule) p = { bg: tint(baseHex, .82), dom: baseHex, sec: others[st.type === 'komplementer' ? 0 : 0] && (st.type === 'komplementer' ? shade(baseHex, .25) : others[0]), acc: st.type === 'komplementer' ? others[0] : others[1] || others[0] };
+      else p = { bg: baseHex, dom: others[0], sec: others[1] || baseHex, acc: others[1] || others[0] };
+      p.text = bestText(p.bg); p.title = st.type === 'komplementer' ? 'SUMMER SALE' : st.type === 'analog' ? 'TEH HERBAL' : 'FESTIVAL ANAK';
+      p.sub = st.type === 'komplementer' ? 'Diskon hingga 50% · hari ini saja' : st.type === 'analog' ? 'Segar alami setiap hari' : 'Main, warnai, dan berkreasi!';
+      p.cta = st.type === 'komplementer' ? 'Beli sekarang' : st.type === 'analog' ? 'Coba sekarang' : 'Daftar gratis';
+      return { idx, cols, p };
+    }
+    function update() {
+      const { idx, cols, p } = palette();
+      poster.userData.apply(p);
+      wheel.lift(idx);
+      idx.forEach((i, k) => { const a = rad(90 - i * 30); pins[k].visible = true; pins[k].position.set(-3 + 1.55 * Math.cos(a), 1.55 * Math.sin(a), 1.25); });
+      for (let k = idx.length; k < 3; k++) pins[k].visible = false;
+      palEl.innerHTML = '';
+      idx.forEach((i, k) => palEl.append(h('div', { class: 'sw-big', style: `background:${cols[k]};color:${bestText(cols[k])}` }, h('b', {}, WHEEL[i].n), h('span', {}, cols[k]))));
+      const cr = contrast(p.bg, p.text);
+      ctx.readout(`Skema ${st.type} · teks ${ratioTxt(cr)}`, idx.map(i => WHEEL[i].n).join(' + '), HARM_TXT[st.type]);
+    }
+    const segT = seg({ label: 'Jenis harmoni', items: [{ key: 'komplementer', name: 'Komplementer' }, { key: 'analog', name: 'Analog' }, { key: 'triadik', name: 'Triadik' }], value: st.type, onPick: k => { st.type = k; update(); } });
+    const segB = swatches({ label: 'Warna utama', items: WHEEL.map(w => ({ key: String(w.i), color: w.hex, name: w.n })), value: String(st.base), onPick: k => { st.base = +k; update(); } });
+    const saveBtn = h('button', { class: 'btn sm', onclick: () => {
+      st.saved.add(st.type); stage.pulse(poster, .05);
+      ctx.steps(['komplementer', 'analog', 'triadik'].map(t => st.saved.has(t)));
+      toast(`Studi ${st.type} disimpan (${st.saved.size}/3)`);
+      if (st.saved.size === 3) ctx.done();
+    } }, '💾 Simpan studi palet ini');
+    ctx.controls.append(segT, segB,
+      slider({ label: 'Tint ↔ shade (value)', min: -.5, max: .6, step: .05, value: 0, fmt: v => v > 0 ? `tint ${Math.round(v * 100)}%` : v < 0 ? `shade ${Math.round(-v * 100)}%` : 'murni', onInput: v => { st.light = v; update(); } }),
+      toggle({ label: 'Terapkan proporsi 60-30-10', value: true, onChange: v => { st.rule = v; update(); } }),
+      h('div', { class: 'ctl' }, h('span', { class: 'ctl-l' }, 'Palet saat ini'), palEl),
+      h('div', { class: 'row' }, saveBtn));
+    ctx.ar([{ label: 'Komplementer', fn: () => { st.type = 'komplementer'; segT.set('komplementer'); update(); } }, { label: 'Analog', fn: () => { st.type = 'analog'; segT.set('analog'); update(); } }, { label: 'Triadik', fn: () => { st.type = 'triadik'; segT.set('triadik'); update(); } }, { label: 'Warna berikutnya', fn: () => { st.base = wrap12(st.base + 1); segB.set(String(st.base)); update(); } }]);
+    update();
+  }
+};
+
+/* ---------- 4. KONTRAS ---------- */
+PRIN.kontras = {
+  short: 'Keterbacaan ditentukan terutama oleh value',
+  def: 'Kontras warna adalah perbedaan yang membuat elemen terpisah dari sekitarnya. Kontras bisa muncul dari perbedaan hue (jenis warna), value (gelap–terang), atau saturation (cerah–kusam). Untuk keterbacaan teks, perbedaan value adalah yang paling menentukan.',
+  note: '<b>Kunci</b>Merah dan hijau berseberangan pada roda, tetapi bila value-nya sama, teks tetap sulit dibaca, dan kombinasi ini juga menyulitkan orang dengan buta warna merah-hijau. Aktifkan <b>mode grayscale</b> untuk melihat kontras value tanpa gangguan hue. Rasio kontras dihitung dengan rumus WCAG: minimal 4,5:1 untuk teks biasa.',
+  mission: 'Buktikan bahwa value lebih penting daripada hue untuk keterbacaan.',
+  steps: ['Buat teks dan latar yang hue-nya berbeda jauh (≥ 90°) tetapi rasio kontrasnya di bawah 2:1', 'Tanpa mengubah hue keduanya, atur value/saturasi sampai rasio ≥ 4,5:1'],
+  examples: ['Teks kuning di atas putih sulit dibaca walau warnanya cerah, karena value keduanya sama-sama tinggi.', 'Navy di atas krem memberi kontras value tinggi dengan kesan lembut.', 'Kontras saturasi: satu elemen jenuh di antara warna kusam akan langsung menjadi pusat perhatian.', 'Desain antarmuka wajib memeriksa rasio kontras agar dapat diakses semua pengguna.'],
+  hint: 'Atur hue, saturasi, dan lightness teks serta latar · aktifkan grayscale untuk melihat value',
+  build(ctx) {
+    const { stage } = ctx;
+    stage.setBoard(PTINT.kontras); stage.setView(6.4, 6.6);
+    const poster = makePoster(4.4, 5.8); stage.add(poster);
+    const st = { fg: { h: 222, s: .55, l: .22 }, bg: { h: 40, s: .6, l: .92 }, gray: false, s1: false, s2: false, h1: null };
+    const fgHex = () => hslToHex(st.fg.h, st.fg.s, st.fg.l), bgHex = () => hslToHex(st.bg.h, st.bg.s, st.bg.l);
+    const hueDiff = (a, b) => { const d = Math.abs(a - b) % 360; return d > 180 ? 360 - d : d; };
+    const fgSw = h('div', { class: 'sw-big' }), bgSw = h('div', { class: 'sw-big' });
+    function update() {
+      const f = fgHex(), b = bgHex(), cr = contrast(f, b), gr = grade(cr);
+      poster.userData.apply({ bg: b, dom: mixHex(b, f, .18), sec: mixHex(b, f, .35), acc: f, text: f, title: 'BACA SAYA', sub: 'Apakah teks ini nyaman dibaca?', cta: 'Lanjut', gray: st.gray });
+      [[fgSw, f, 'Teks'], [bgSw, b, 'Latar']].forEach(([el, hx, lb]) => { el.style.background = hx; el.style.color = bestText(hx); el.innerHTML = `<b>${lb}</b><span>${hx}</span>`; });
+      const dH = Math.round(hueDiff(st.fg.h, st.bg.h)), dL = Math.round(Math.abs(lstar(f) - lstar(b))), dS = Math.round(Math.abs(st.fg.s - st.bg.s) * 100);
+      const dom = dL >= 40 ? 'Kontras value kuat: keterbacaan aman.' : dH >= 90 && dL < 20 ? 'Kontras hue tinggi tetapi value hampir sama: warnanya “bergetar” dan teks sulit dibaca.' : dS >= 50 && dL < 25 ? 'Kontras saturasi menarik perhatian, tetapi value-nya kurang untuk teks.' : 'Tambah perbedaan gelap–terang agar teks lebih tegas.';
+      ctx.readout(`Rasio ${ratioTxt(cr)} · ${gr.g}`, gr.t, `Δ hue ${dH}° · Δ value (L*) ${dL} · Δ saturasi ${dS}%. ${dom}`);
+      if (!st.s1 && dH >= 90 && cr < 2) { st.s1 = true; st.h1 = [st.fg.h, st.bg.h]; toast('Langkah 1 tercapai: hue berbeda jauh, tapi teks sulit dibaca'); }
+      if (st.s1 && !st.s2 && cr >= 4.5 && hueDiff(st.fg.h, st.h1[0]) <= 15 && hueDiff(st.bg.h, st.h1[1]) <= 15) st.s2 = true;
+      ctx.steps([st.s1, st.s2]);
+      if (st.s1 && st.s2) ctx.done();
+    }
+    const S = {};
+    const mk = (who, key, label, max, scale) => (S[who + key] = slider({ label, min: 0, max, step: 1, value: Math.round(st[who][key] * scale), fmt: v => key === 'h' ? v + '°' : v + '%', onInput: v => { st[who][key] = v / scale; update(); } }));
+    function setAll(f, b) { st.fg = { ...f }; st.bg = { ...b }; ['h', 's', 'l'].forEach(k => { S['fg' + k].set(Math.round(st.fg[k] * (k === 'h' ? 1 : 100))); S['bg' + k].set(Math.round(st.bg[k] * (k === 'h' ? 1 : 100))); }); update(); }
+    const PRE = [
+      { label: 'Merah di atas hijau', f: { h: 0, s: .75, l: .45 }, b: { h: 140, s: .6, l: .38 } },
+      { label: 'Kuning di atas putih', f: { h: 56, s: 1, l: .5 }, b: { h: 45, s: .2, l: .97 } },
+      { label: 'Navy di atas krem', f: { h: 222, s: .55, l: .22 }, b: { h: 40, s: .6, l: .92 } },
+      { label: 'Abu di atas abu', f: { h: 0, s: 0, l: .55 }, b: { h: 0, s: 0, l: .45 } }
+    ];
+    ctx.controls.append(
+      h('div', { class: 'row' }, fgSw, bgSw),
+      h('div', { class: 'ctl' }, h('span', { class: 'ctl-l' }, 'Contoh cepat'), h('div', { class: 'row' }, PRE.map(p => h('button', { class: 'btn ghost sm', onclick: () => setAll(p.f, p.b) }, p.label)))),
+      h('span', { class: 'mono', style: 'color:var(--muted);margin-top:4px' }, 'Warna teks (foreground)'), mk('fg', 'h', 'Hue', 360, 1), mk('fg', 's', 'Saturasi', 100, 100), mk('fg', 'l', 'Lightness (value)', 100, 100),
+      h('span', { class: 'mono', style: 'color:var(--muted);margin-top:4px' }, 'Warna latar (background)'), mk('bg', 'h', 'Hue', 360, 1), mk('bg', 's', 'Saturasi', 100, 100), mk('bg', 'l', 'Lightness (value)', 100, 100),
+      toggle({ label: 'Mode grayscale (lihat value saja)', value: false, onChange: v => { st.gray = v; update(); } }));
+    ctx.ar(PRE.map(p => ({ label: p.label, fn: () => setAll(p.f, p.b) })).concat([{ label: 'Grayscale', fn: () => { st.gray = !st.gray; update(); } }]));
+    update();
+  }
+};
+
+/* ---------- 5. PSIKOLOGI ---------- */
+const PSY = {
+  merah: { hex: '#E32322', n: 'Merah', kesan: 'energi, gairah, urgensi, menarik perhatian', risiko: 'agresif, bahaya, atau peringatan', konteks: 'Merah terang terasa mendesak; merah tua (maroon) terasa lebih matang dan elegan.', pakai: 'label diskon, tombol promo, tanda peringatan' },
+  jingga: { hex: '#F18E1C', n: 'Jingga', kesan: 'ramah, hangat, antusias, mudah dijangkau', risiko: 'kurang serius atau murahan bila berlebihan', konteks: 'Jingga lembut (peach) terasa nyaman; jingga terang terasa sporty.', pakai: 'tombol aksi, produk makanan, layanan yang ramah' },
+  kuning: { hex: '#F4E500', n: 'Kuning', kesan: 'ceria, optimis, penuh perhatian', risiko: 'melelahkan mata pada area luas; juga dipakai sebagai tanda waspada', konteks: 'Dipasangkan dengan hitam terasa tegas; mustard terasa lebih dewasa. Teks kuning di atas putih sulit dibaca.', pakai: 'highlight, sorotan informasi, produk anak' },
+  hijau: { hex: '#008E5B', n: 'Hijau', kesan: 'alami, segar, pertumbuhan, keseimbangan', risiko: 'terasa hambar bila terlalu kusam', konteks: 'Hijau muda terasa segar; hijau tua terasa stabil dan mapan.', pakai: 'produk organik, status “berhasil”, keberlanjutan' },
+  biru: { hex: '#2A71B0', n: 'Biru', kesan: 'tenang, tepercaya, profesional', risiko: 'dingin atau berjarak', konteks: 'Biru muda terasa ringan dan lega; navy terasa berwibawa.', pakai: 'perbankan, teknologi, layanan kesehatan' },
+  ungu: { hex: '#6D398B', n: 'Ungu', kesan: 'kreatif, imajinatif, mewah', risiko: 'artifisial atau misterius', konteks: 'Lavender terasa lembut dan menenangkan; ungu tua terasa mewah.', pakai: 'produk kecantikan, industri kreatif, layanan relaksasi' },
+  hitam: { hex: '#151515', n: 'Hitam', kesan: 'elegan, kuat, formal, eksklusif', risiko: 'berat atau suram', konteks: 'Dengan emas terasa mewah; dengan warna neon terasa modern dan berani.', pakai: 'produk premium, fesyen, kemasan eksklusif' },
+  putih: { hex: '#F7F7F2', n: 'Putih', kesan: 'bersih, sederhana, lega', risiko: 'steril atau kosong', konteks: 'Ruang putih yang cukup memberi napas dan memusatkan perhatian pada konten.', pakai: 'desain minimalis, layanan kesehatan, produk teknologi' }
+};
+const BRIEFS = [
+  { t: 'Aplikasi meditasi untuk membantu tidur', ok: ['biru', 'ungu', 'hijau'], why: 'Brief ini meminta kesan tenang dan rileks. Warna dingin dengan saturasi lembut paling mendukung.' },
+  { t: 'Banner flash sale yang hanya 2 jam', ok: ['merah', 'jingga', 'kuning'], why: 'Brief ini meminta urgensi dan perhatian cepat. Warna hangat yang jenuh paling efektif.' },
+  { t: 'Kemasan parfum premium', ok: ['hitam', 'ungu'], why: 'Brief ini meminta kesan eksklusif dan mewah. Warna gelap yang dalam paling mendukung.' }
+];
+PRIN.psikologi = {
+  short: 'Asosiasi warna bergantung pada konteks',
+  def: 'Warna memicu asosiasi dan kesan, misalnya biru sering dikaitkan dengan ketenangan dan merah dengan urgensi. Asosiasi ini bukan hukum pasti. Ia dipelajari dari pengalaman dan sangat dipengaruhi konteks: value dan saturasi, warna pasangannya, jenis produk, serta latar belakang audiens.',
+  note: '<b>Kunci</b>Gunakan psikologi warna sebagai <i>kecenderungan</i>, bukan aturan. Biru muda dan navy sama-sama biru, tetapi kesannya berbeda. Merah pada tombol promo terasa mendesak, sedangkan merah pada restoran bisa terasa hangat. Selalu uji desain dengan audiens yang dituju.',
+  mission: 'Bantu tiga klien: pilih warna dominan yang paling cocok untuk setiap brief, lalu baca alasannya.',
+  steps: BRIEFS.map(b => b.t),
+  examples: ['Brand kesehatan sering memakai biru/hijau untuk membangun rasa aman, dengan dukungan foto dan tipografi yang konsisten.', 'Label “diskon” memakai merah atau kuning karena kontras dan asosiasi urgensinya.', 'Produk premium memakai hitam dengan banyak ruang kosong untuk kesan eksklusif.', 'Satu warna bisa diubah kesannya hanya dengan menggeser value dan saturasinya.'],
+  hint: 'Pilih warna untuk melihat asosiasinya pada poster dan kemasan',
+  build(ctx) {
+    const { stage } = ctx;
+    stage.setBoard(PTINT.psikologi); stage.setView(9.5, 6.4);
+    const poster = makePoster(3.6, 4.8); poster.position.set(-1.9, 0, .1); stage.add(poster);
+    const can = makeCan(); can.position.set(2.6, -.2, 1.1); stage.add(can);
+    const infoEl = h('div', { class: 'psy' });
+    const done = BRIEFS.map(() => false);
+    function show(k) {
+      const p = PSY[k], dark = k === 'hitam', light = k === 'putih';
+      const bg = light ? '#F7F7F2' : dark ? '#151515' : tint(p.hex, .78);
+      poster.userData.apply({ bg, dom: p.hex, sec: dark ? '#C9A227' : shade(p.hex, .25), acc: dark ? '#C9A227' : light ? '#2A71B0' : p.hex === '#F4E500' ? '#151515' : p.hex, title: p.n.toUpperCase(), sub: p.kesan.split(',').slice(0, 2).join(' ·'), cta: 'Lihat koleksi' });
+      can.userData.apply(p.hex, dark ? '#C9A227' : light ? '#2A71B0' : '#ffffff');
+      infoEl.innerHTML = '';
+      infoEl.append(h('div', { class: 'psy-h', style: `background:${p.hex};color:${bestText(p.hex)}` }, p.n), h('p', {}, h('b', {}, 'Sering diasosiasikan: '), p.kesan + '.'), h('p', {}, h('b', {}, 'Bisa juga terasa: '), p.risiko + '.'), h('p', {}, h('b', {}, 'Dipengaruhi konteks: '), p.konteks), h('p', {}, h('b', {}, 'Contoh penerapan: '), p.pakai + '.'));
+      ctx.readout('Asosiasi umum (bukan aturan pasti)', p.n, p.kesan);
+    }
+    const sw = swatches({ label: 'Pilih warna', items: Object.entries(PSY).map(([k, p]) => ({ key: k, color: p.hex, name: p.n })), value: 'biru', onPick: show });
+    const briefWrap = h('div', { class: 'briefs' });
+    BRIEFS.forEach((b, bi) => {
+      const fb = h('p', { class: 'hint', style: 'margin:6px 0 0' });
+      const row = h('div', { class: 'sw' }, Object.entries(PSY).map(([k, p]) => h('button', { title: p.n, 'aria-label': p.n, style: `background:${p.hex};width:28px;height:28px`, onclick: () => {
+        show(k); sw.set(k);
+        const ok = b.ok.includes(k);
+        fb.innerHTML = (ok ? '✅ <b>Cocok.</b> ' : '🤔 <b>Kurang cocok.</b> ') + `${p.n} sering diasosiasikan dengan ${p.kesan}. ${b.why}` + (ok ? '' : ` Pilihan yang lebih sesuai: ${b.ok.map(x => PSY[x].n).join(', ')}.`);
+        if (ok) { done[bi] = true; ctx.steps(done); if (done.every(Boolean)) ctx.done(); }
+      } })));
+      briefWrap.append(h('div', { class: 'brief' }, h('b', {}, `${bi + 1}. ${b.t}`), row, fb));
+    });
+    ctx.controls.append(sw, infoEl, h('div', { class: 'ctl' }, h('span', { class: 'ctl-l' }, 'Brief klien (misi)'), briefWrap));
+    ctx.ar(['merah', 'biru', 'hijau', 'hitam'].map(k => ({ label: PSY[k].n, fn: () => { show(k); sw.set(k); } })));
+    show('biru');
+  }
+};
+
+/* =========================================================
+   App state & progress
+   ========================================================= */
+const S = {
+  started: false, t0: null, view: 'intro', current: 'roda',
+  visited: new Set(), missions: new Set(),
+  ai: { palettes: 0, picked: [], scen: 0, scenOk: 0, recent: [] },
+  quiz: { done: false, score: 0, per: {} }
+};
+const PHASES = [
+  { key: 'intro', label: 'Pengantar', go: 'intro', p: () => S.started ? 1 : 0 },
+  { key: 'explore', label: 'Eksplorasi', go: 'room', p: () => S.visited.size / 5 },
+  { key: 'exp', label: 'Eksperimen', go: 'room', p: () => S.missions.size / 5 },
+  { key: 'ai', label: 'AI Generation', go: 'ai', p: () => ((S.ai.picked.length ? 1 : 0) + Math.min(S.ai.scen, 2)) / 3 },
+  { key: 'eval', label: 'Evaluasi', go: 'quiz', p: () => S.quiz.done ? 1 : 0 }
+];
+function renderSteps() {
+  const ol = $('#steps'); ol.innerHTML = '';
+  PHASES.forEach((ph, i) => {
+    const p = Math.round(ph.p() * 100);
+    const cur = S.view === ph.go && (ph.go !== 'room' || ((ph.key === 'explore') === (S.visited.size < 5)));
+    ol.append(h('li', {}, h('button', { class: 'step', 'aria-current': String(cur), title: `${ph.label}: ${p}%`, onclick: () => go(ph.go) },
+      h('span', { class: 'ring' + (p >= 100 ? ' full' : ''), style: `--p:${p}` }, h('span', {}, p >= 100 ? '✓' : String(i + 1))),
+      h('span', { class: 'lbl' }, ph.label))));
+  });
+  $('#overall').style.width = (PHASES.reduce((a, ph) => a + ph.p(), 0) / PHASES.length * 100) + '%';
+  const na = $('#navAR'); if (na) na.setAttribute('aria-current', String(S.view === 'ar'));
+}
+function go(view) {
+  if (view !== 'intro' && !S.started) startLearning();
+  if (S.view === 'ar' && view !== 'ar') stopScan();
+  S.view = view;
+  $$('.view').forEach(v => v.classList.toggle('active', v.id === 'v-' + view));
+  if (view === 'room') { ensureRoom(); requestAnimationFrame(() => roomStage.resize()); }
+  if (view === 'ar') buildGallery();
+  if (view === 'ai') { ensureAI(); requestAnimationFrame(() => aiStage.resize()); }
+  if (view === 'quiz') renderQuiz();
+  window.scrollTo({ top: 0 });
+  renderSteps();
+  try { if (location.hash !== '#' + view) history.replaceState(null, '', '#' + view); } catch (e) {}
+}
+function startLearning() {
+  if (S.started) return;
+  S.started = true; S.t0 = Date.now();
+  setInterval(() => { const s = Math.floor((Date.now() - S.t0) / 1000); $('#timer').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }, 1000);
+}
+
+/* =========================================================
+   Shared mission helpers
+   ========================================================= */
+function missionBox(key) {
+  const P = PRIN[key], done = S.missions.has(key);
+  const el = h('div', { class: 'mission' + (done ? ' done' : ''), 'data-k': key }, h('span', { class: 'mtag' }, done ? '✓ Misi selesai' : '🎯 Misi'), h('p', { html: P.mission }));
+  let sub = null;
+  if (P.steps) { sub = h('div', { class: 'sub' }, P.steps.map(s => h('span', {}, h('i'), s))); el.append(sub); }
+  return { el, sub };
+}
+function makeCtx(key, stage, ui) {
+  return {
+    stage, controls: ui.ctlEl,
+    readout(title, big, small) { ui.liveEl.innerHTML = ''; ui.liveEl.append(h('span', { class: 'mono' }, title), h('b', {}, big), small ? h('p', {}, small) : ''); },
+    steps(arr) { if (!ui.sub) return; [...ui.sub.children].forEach((s, i) => s.querySelector('i').classList.toggle('ok', !!arr[i])); },
+    done() { completeMission(key); },
+    ar(list) { ui.onAR && ui.onAR(list); }
+  };
+}
+function completeMission(key) {
+  if (S.missions.has(key)) return;
+  S.missions.add(key);
+  $$(`.mission[data-k="${key}"]`).forEach(m => { m.classList.add('done'); m.querySelector('.mtag').textContent = '✓ Misi selesai'; });
+  toast(`🎉 Misi ${NAMES[key]} selesai! (${S.missions.size}/5)`, 'ok');
+  renderStrip(); renderSteps();
+}
+
+/* =========================================================
+   Learning slides
+   ========================================================= */
+const SLIDES = [{ type: 'intro' }, ...KEYS.flatMap(k => [{ type: 'kenali', k }, { type: 'coba', k }]), { type: 'summary' }];
+let roomStage, slideIdx = 0, built = null, arSupported = null, arActions = [];
+const EMO = ['🖼️', '🛍️', '📱', '🎨'];
+
+function buildIntroScene(stage) {
+  stage.setBoard(PTINT.intro); stage.setView(8, 7.2);
+  const wheel = buildWheel(stage, { r1: 1.4, r2: 2.9, onPick: i => { wheel.lift(i); const w = WHEEL[i]; $('#live').innerHTML = ''; $('#live').append(h('span', { class: 'mono' }, 'Warna dipilih'), h('b', {}, `${w.n} · ${w.hex}`), h('p', {}, CAT_TXT[w.cat] + '.')); } });
+  const g = new THREE.Group(); wheel.wedges.forEach(m => { stage.content.remove(m); g.add(m); }); stage.add(g);
+  const t0 = performance.now();
+  stage.tickers.add(() => { g.rotation.z = Math.sin((performance.now() - t0) / 2400) * .35; return true; });
+  $('#live').innerHTML = ''; $('#live').append(h('span', { class: 'mono' }, 'Roda warna 3D'), h('b', {}, 'Klik salah satu warna'), h('p', {}, 'Tinggi irisan menunjukkan tingkatnya: primer, sekunder, lalu tersier.'));
+}
+function buildScene(key) {
+  if (built && built.key === key) return built;
+  roomStage.clear(); arActions = []; $('#live').innerHTML = '';
+  if (key === 'intro') { buildIntroScene(roomStage); built = { key }; return built; }
+  const mb = missionBox(key), ctlEl = h('div', { class: 'ctls' });
+  built = { key, missionEl: mb.el, ctlEl };
+  PRIN[key].build(makeCtx(key, roomStage, { liveEl: $('#live'), ctlEl, sub: mb.sub, onAR: l => { arActions = l; } }));
+  return built;
+}
+function ensureRoom() {
+  if (roomStage) return;
+  roomStage = new Stage($('#roomStage'));
+  $('#camReset').onclick = () => roomStage.setView(roomStage.viewW, roomStage.viewH);
+  $('#viewFlat').onclick = () => roomStage.setView(roomStage.viewW, roomStage.viewH, 0);
+  $('#viewTilt').onclick = () => { roomStage.controls.target.set(0, 0, 0); roomStage.camera.position.set(4.5, -4, 8).normalize(); roomStage.fit(); };
+  $('#prevSlide').onclick = () => openSlide(slideIdx - 1);
+  $('#nextSlide').onclick = () => openSlide(slideIdx + 1);
+  document.addEventListener('keydown', e => { if (S.view !== 'room' || /input|textarea/i.test(e.target.tagName)) return; if (e.key === 'ArrowRight') openSlide(slideIdx + 1); if (e.key === 'ArrowLeft') openSlide(slideIdx - 1); });
+  setupAR();
+  openSlide(slideIdx);
+}
+function renderStrip() {
+  const box = $('#thumbs'); if (!box) return;
+  box.innerHTML = '';
+  SLIDES.forEach((sl, i) => {
+    const k = sl.k, c = k ? PCOL[k] : '#fff', fg = k ? PFG[k] : 'var(--ink)';
+    const label = sl.type === 'intro' ? 'Mulai' : sl.type === 'summary' ? 'Rangkuman' : NAMES[k];
+    const sub = sl.type === 'kenali' ? `${KEYS.indexOf(k) + 1} · Kenali` : sl.type === 'coba' ? `${KEYS.indexOf(k) + 1} · Coba` : sl.type === 'intro' ? 'Teori warna' : 'Selesai';
+    const done = (sl.type === 'kenali' && S.visited.has(k)) || (sl.type === 'coba' && S.missions.has(k));
+    box.append(h('button', { class: 'thumb', style: `--c:${c};--fg:${fg}`, 'aria-current': String(i === slideIdx), title: label + ' — ' + sub, onclick: () => openSlide(i) }, label, h('small', {}, sub), done ? h('span', { class: 'ck' }, '✓') : ''));
+  });
+  const cur = box.children[slideIdx]; if (cur && cur.scrollIntoView) cur.scrollIntoView({ block: 'nearest', inline: 'center' });
+  $('#counter').textContent = `${slideIdx + 1} / ${SLIDES.length}`;
+  $('#prevSlide').disabled = slideIdx === 0; $('#nextSlide').disabled = slideIdx === SLIDES.length - 1;
+}
+function openPrinciple(k, type = 'kenali') { openSlide(SLIDES.findIndex(s => s.k === k && s.type === type)); }
+function openSlide(i) {
+  i = clamp(i, 0, SLIDES.length - 1); slideIdx = i;
+  const sl = SLIDES[i], key = sl.k || 'intro';
+  if (sl.k) { S.current = sl.k; S.visited.add(sl.k); }
+  buildScene(key);
+  $('#stageCard').style.setProperty('--tint', PTINT[key]);
+  const card = $('#slideCard'); card.innerHTML = ''; card.scrollTop = 0;
+  const next = (lbl, cls = '') => h('button', { class: 'btn ' + cls, onclick: () => openSlide(i + 1) }, lbl);
+  const prev = () => i > 0 ? h('button', { class: 'btn ghost sm', onclick: () => openSlide(i - 1) }, '← Sebelumnya') : h('span');
+  if (sl.type === 'intro') {
+    $('#roomHint').textContent = 'Klik irisan roda · seret latar untuk memutar';
+    card.append(
+      h('span', { class: 'stag' }, '👋 Mulai di sini'), h('h2', {}, 'Apa itu teori warna?'),
+      h('p', { class: 'def', html: 'Teori warna menjelaskan <b>hubungan antarwarna</b> (bagaimana warna dicampur, dipasangkan, dan dikontraskan) serta <b>efeknya bagi audiens</b>, mulai dari keterbacaan hingga kesan yang ditimbulkan. Bagi desainer, teori warna adalah alat untuk membuat keputusan warna yang bisa dipertanggungjawabkan, bukan sekadar selera.' }),
+      h('div', { class: 'keybox', style: `--tintc:${PTINT.intro}`, html: '<b>🎨 Tiga atribut warna</b><b style="display:inline">Hue</b>: jenis warna (merah, biru…). <b style="display:inline">Value</b>: gelap–terang. <b style="display:inline">Saturation</b>: cerah–kusam. Hampir semua keputusan warna dalam desain adalah permainan ketiga atribut ini.' }),
+      h('div', { class: 'sec' }, h('span', { class: 'mono' }, 'Lima materi yang akan kamu jelajahi'),
+        h('div', { class: 'ptiles' }, KEYS.map(k => h('button', { class: 'ptile', style: `background:${PTINT[k]}`, onclick: () => openPrinciple(k) }, h('span', { html: ICON[k] }), h('span', {}, NAMES[k], h('small', {}, IDN[k])))))),
+      h('div', { class: 'keybox', html: '<b>🕹️ Cara memakai slide</b>Seret latar untuk memutar ruang 3D, scroll atau cubit untuk zoom, lalu klik atau seret objek. Pindah slide dengan tombol ← → atau strip di bawah.' }),
+      h('div', { class: 'snav' }, h('span'), next('Mulai: Roda Warna →', 'yellow')));
+  } else if (sl.type === 'summary') {
+    $('#roomHint').textContent = 'Kamu sudah menjelajahi lima materi teori warna';
+    card.append(
+      h('span', { class: 'stag', style: '--c:var(--green)' }, '🏁 Rangkuman'),
+      h('h2', {}, S.missions.size === 5 ? 'Semua misi selesai! 🎉' : 'Hampir selesai!'),
+      h('p', { class: 'def' }, `Kamu sudah membuka ${S.visited.size}/5 materi dan menyelesaikan ${S.missions.size}/5 misi eksperimen.`),
+      h('div', { class: 'sec' }, h('div', { class: 'ptiles', style: 'grid-template-columns:1fr' }, KEYS.map(k => h('button', { class: 'ptile', style: `background:${PTINT[k]}`, onclick: () => openPrinciple(k, S.missions.has(k) ? 'kenali' : 'coba') }, h('span', { html: ICON[k] }), h('span', { style: 'flex:1' }, NAMES[k], h('small', {}, PRIN[k].short)), h('span', {}, S.missions.has(k) ? '✅' : '⬜'))))),
+      h('div', { class: 'keybox', html: '<b>✦ Berikutnya: AI Generation</b>Minta GenAI membuat variasi palet dari warna dan karakter pilihanmu, lalu uji kemampuanmu memilih palet untuk sebuah brief desain.' }),
+      h('div', { class: 'row', style: 'margin-top:18px' }, h('button', { class: 'btn green', onclick: () => go('ai') }, '✦ Lanjut ke AI Lab'), h('button', { class: 'btn purple', onclick: () => go('ar') }, '📱 AR Scan')));
+  } else {
+    const k = sl.k, P = PRIN[k], n = KEYS.indexOf(k) + 1;
+    const tag = h('span', { class: 'stag', style: `--c:${PCOL[k]};--fg:${PFG[k]}` }, `Materi ${n} · ${sl.type === 'kenali' ? '👀 Kenali' : '🧪 Coba'}`);
+    if (sl.type === 'kenali') {
+      $('#roomHint').textContent = 'Putar dan amati. Kamu juga sudah boleh menyentuh objeknya';
+      card.append(tag, h('h2', {}, NAMES[k]), h('span', { class: 'idn' }, IDN[k]), h('p', { class: 'def' }, P.def),
+        h('div', { class: 'keybox', style: `--tintc:${PTINT[k]}`, html: P.note.replace('<b>Kunci</b>', '<b>💡 Kunci</b>') }),
+        h('div', { class: 'sec' }, h('span', { class: 'mono' }, '🎨 Penerapan dalam desain'), h('ul', { class: 'exlist' }, P.examples.map((e, j) => h('li', {}, h('span', {}, EMO[j % 4]), e)))),
+        h('div', { class: 'snav' }, prev(), next('Coba sendiri →', 'yellow')));
+    } else {
+      $('#roomHint').textContent = P.hint;
+      card.append(tag, h('h2', {}, NAMES[k]), h('span', { class: 'idn' }, IDN[k]), built.missionEl,
+        h('div', { class: 'sec' }, h('span', { class: 'mono' }, 'Kontrol eksperimen'), built.ctlEl),
+        h('div', { class: 'keybox', html: `<b>📱 Punya kartu AR?</b>Scan <b>kartu nomor ${n}</b> di menu AR Scan untuk mencoba materi ini di atas meja.` }),
+        h('div', { class: 'snav' }, prev(), next(i + 1 < SLIDES.length - 1 ? `${NAMES[KEYS[n]]} →` : 'Rangkuman →')));
+    }
+  }
+  renderStrip(); renderSteps();
+}
+
+/* ---------- AR ruang (WebXR, optional) ---------- */
+async function setupAR() {
+  const btn = $('#arBtn');
+  try { arSupported = !!(navigator.xr && await navigator.xr.isSessionSupported('immersive-ar')); } catch (e) { arSupported = false; }
+  btn.dataset.supported = String(arSupported);
+  btn.onclick = async () => {
+    if (!arSupported) { toast('AR ruang (WebXR) tidak didukung di sini. Pakai menu 📱 AR Scan dengan kartu: berjalan di Android & iPhone.'); return; }
+    if (!built || built.key === 'intro') { toast('Buka slide salah satu materi dulu.'); return; }
+    const ov = $('#arOverlay'), acts = $('#arActions');
+    $('#arTitle').textContent = 'AR · ' + NAMES[built.key]; acts.innerHTML = '';
+    arActions.forEach(a => acts.append(h('button', { onclick: a.fn }, a.label)));
+    let session;
+    acts.append(h('button', { class: 'x', onclick: () => session && session.end() }, 'Keluar AR'));
+    ov.addEventListener('beforexrselect', e => e.preventDefault());
+    ov.classList.add('on');
+    try { session = await roomStage.startAR(ov, () => ov.classList.remove('on')); } catch (e) { ov.classList.remove('on'); toast('Gagal memulai AR: ' + (e.message || e)); }
+  };
+}
+
+/* =========================================================
+   AR Scan — image tracking on printed cards (MindAR)
+   ========================================================= */
+const MINDAR_URL = 'https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-three.prod.js';
+const TARGETS_URL = 'targets.mind';
+let scan = null, scanActive = -1;
+function buildGallery() {
+  const g = $('#cardGallery'); if (g.dataset.built) return; g.dataset.built = '1';
+  KEYS.forEach((k, i) => g.append(h('figure', {}, h('a', { href: `cards/card${i + 1}.jpg`, target: '_blank', rel: 'noopener' }, h('img', { src: `cards/card${i + 1}.jpg`, alt: `Kartu AR ${i + 1}: ${NAMES[k]}`, loading: 'lazy' })), h('figcaption', { style: `background:${PCOL[k]};color:${PFG[k]}` }, `${i + 1} · ${NAMES[k]}`))));
+}
+function arError(msg) { const e = $('#arErr'); e.hidden = false; e.innerHTML = msg; }
+async function startScan() {
+  if (scan) return;
+  const box = $('#arCam'), gob = $('#arGo');
+  $('#arErr').hidden = true; gob.disabled = true; gob.textContent = 'Menyiapkan kamera…';
+  try {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw Object.assign(new Error('nomedia'), { name: 'NoMedia' });
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' }, audio: false });
+    stream.getTracks().forEach(t => t.stop());
+  } catch (e) {
+    gob.disabled = false; gob.textContent = 'Nyalakan kamera';
+    const inFrame = window.self !== window.top;
+    if (e.name === 'NotAllowedError' || e.name === 'SecurityError') arError(inFrame ? '<b>Kamera diblokir di halaman ini.</b> Halaman sedang dibuka di dalam bingkai (misalnya pratinjau Claude) yang tidak mengizinkan kamera. Buka <b>link publik (GitHub Pages)</b> langsung di browser HP.' : '<b>Izin kamera ditolak.</b> Izinkan akses kamera di pengaturan situs browser, lalu tekan tombol lagi.');
+    else if (e.name === 'NotFoundError' || e.name === 'OverconstrainedError') arError('<b>Kamera tidak ditemukan.</b> Gunakan HP atau laptop yang memiliki kamera.');
+    else if (e.name === 'NoMedia') arError('<b>Browser ini tidak mendukung akses kamera</b>, atau halaman tidak dibuka lewat HTTPS. Buka link publik di Chrome (Android) atau Safari (iPhone).');
+    else arError('<b>Kamera tidak bisa dipakai:</b> ' + (e.message || e.name));
+    return;
+  }
+  try {
+    gob.textContent = 'Memuat modul AR…';
+    const { MindARThree } = await import(MINDAR_URL);
+    const mind = new MindARThree({ container: box, imageTargetSrc: TARGETS_URL, maxTrack: 1, uiLoading: 'no', uiScanning: 'no', uiError: 'no' });
+    const { renderer, scene, camera } = mind;
+    if (mind.cssRenderer) mind.cssRenderer.domElement.style.pointerEvents = 'none';
+    renderer.domElement.style.zIndex = '1';
+    scene.add(new THREE.HemisphereLight(0xffffff, 0xd8d0e8, 1.4));
+    const dl = new THREE.DirectionalLight(0xffffff, 1.3); dl.position.set(.5, 1, 2); scene.add(dl);
+    const panel = $('#arPanel'); panel.innerHTML = '';
+    const stages = KEYS.map((k, i) => {
+      const anchor = mind.addAnchor(i);
+      const st = new Stage(box, { renderer, scene, camera, parent: anchor.group });
+      st.active = false; st.board.material.transparent = true; st.board.material.opacity = .9;
+      const mb = missionBox(k), ctlEl = h('div', { class: 'ctls' }), liveEl = h('div', { class: 'live' });
+      const wrap = h('div', { hidden: true }, mb.el, liveEl, h('div', { class: 'sec' }, h('span', { class: 'mono' }, 'Kontrol'), ctlEl));
+      panel.append(wrap);
+      PRIN[k].build(makeCtx(k, st, { liveEl, ctlEl, sub: mb.sub }));
+      anchor.onTargetFound = () => arFound(i); anchor.onTargetLost = () => arLost(i);
+      return { st, wrap, k };
+    });
+    scan = { mind, stages };
+    renderer.setAnimationLoop(() => { stages.forEach(s => s.st.active && s.st.tick()); renderer.render(scene, camera); });
+    await mind.start();
+    $('#arStart').hidden = true;
+    box.append(h('div', { class: 'arframe', id: 'arFrame' }), h('div', { class: 'arstatus' }, h('span', { class: 'arpill', id: 'arPill' }, '🔍 Mencari kartu…'), h('button', { class: 'arpill', onclick: stopScan }, '✕ Tutup')));
+    $('#arStop').hidden = false; $('#arPrep').hidden = true;
+    $('#arSheetTitle').textContent = 'Arahkan kamera ke kartu';
+    $('#arSheetHint').textContent = 'Pegang HP ±20–40 cm dari kartu. Pastikan seluruh kartu terlihat dan cukup terang.';
+  } catch (e) {
+    console.error(e); stopScan();
+    arError('<b>Modul AR gagal dimuat.</b> Periksa koneksi internet lalu coba lagi. (' + (e && e.message ? e.message : 'unknown') + ')');
+  } finally { gob.disabled = false; gob.textContent = 'Nyalakan kamera'; }
+}
+function arFound(i) {
+  if (!scan) return;
+  scanActive = i;
+  scan.stages.forEach((s, j) => { s.st.active = j === i; s.wrap.hidden = j !== i; });
+  const k = KEYS[i]; S.visited.add(k); renderSteps();
+  $('#arSheetTitle').textContent = `${i + 1} · ${NAMES[k]}`;
+  $('#arSheetHint').textContent = 'Sentuh atau seret objek di layar kamera, atau gunakan kontrol di bawah.';
+  const pill = $('#arPill'); if (pill) pill.textContent = `✅ Kartu ${i + 1}: ${NAMES[k]}`;
+  const fr = $('#arFrame'); if (fr) fr.style.display = 'none';
+}
+function arLost(i) {
+  if (!scan || scanActive !== i) return;
+  scan.stages[i].st.active = false;
+  const pill = $('#arPill'); if (pill) pill.textContent = '🔍 Kartu hilang. Arahkan lagi…';
+  const fr = $('#arFrame'); if (fr) fr.style.display = '';
+}
+function stopScan() {
+  if (!scan) return;
+  const { mind, stages } = scan; scan = null; scanActive = -1;
+  try { mind.renderer.setAnimationLoop(null); } catch (e) {}
+  try { mind.stop(); } catch (e) {}
+  stages.forEach(s => s.st.destroy());
+  try { mind.renderer.dispose(); } catch (e) {}
+  const box = $('#arCam'); [...box.children].forEach(c => { if (c.id !== 'arStart') c.remove(); });
+  $('#arStart').hidden = false; $('#arStop').hidden = true; $('#arPrep').hidden = false; $('#arPanel').innerHTML = '';
+  $('#arSheetTitle').textContent = 'Belum ada kartu terdeteksi';
+  $('#arSheetHint').textContent = 'Siapkan kartu: cetak PDF kartu, atau tampilkan gambar kartu di layar laptop lalu pindai dengan HP.';
+}
+
+/* =========================================================
+   GenAI connection (Claude runtime / secure backend / simulation)
+   ========================================================= */
+const AI = {
+  mode: 'sim', sample: null, prefer: 'auto', checking: false,
+  get active() { return this.prefer === 'sim' ? 'sim' : this.mode; },
+  async init() {
+    if (this.checking || this.mode === 'claude') return;
+    if (window.COLORLAB_AI_ENDPOINT) { this.mode = 'endpoint'; renderAIStatus(); return; }
+    this.checking = true; renderAIStatus();
+    try {
+      for (let i = 0; i < 28 && !(window.claude && typeof window.claude.use === 'function'); i++) await new Promise(r => setTimeout(r, 250));
+      if (window.claude && typeof window.claude.use === 'function') { const s = await window.claude.use('sample'); if (s) { this.sample = s; this.mode = 'claude'; } }
+    } catch (e) { console.warn('GenAI init:', e); }
+    this.checking = false; renderAIStatus();
+  }
+};
+function renderAIStatus() {
+  const m = AI.active;
+  $('#aiChip').className = 'chip ' + (m === 'sim' ? 'ai-sim' : 'ai-on');
+  $('#aiChipTxt').textContent = AI.checking && m === 'sim' ? 'Menghubungkan GenAI…' : m === 'claude' ? 'GenAI aktif · Claude' : m === 'endpoint' ? 'GenAI aktif · Gemini' : 'GenAI: mode simulasi';
+  const line = $('#aiStatusLine');
+  if (line) line.innerHTML = `<b>Status saat ini:</b> ${m === 'claude' ? 'terhubung ke Claude melalui runtime platform.' : m === 'endpoint' ? 'terhubung ke backend Gemini.' : 'mode simulasi (generator lokal berbasis aturan teori warna).'}`;
+  const segEl = $('#srcSeg'); if (!segEl) return;
+  segEl.innerHTML = '';
+  [{ k: 'auto', n: AI.mode === 'sim' ? 'GenAI (tidak tersedia)' : 'GenAI' }, { k: 'sim', n: 'Simulasi lokal' }].forEach(o => segEl.append(h('button', { 'aria-pressed': String(AI.prefer === o.k), disabled: o.k === 'auto' && AI.mode === 'sim', onclick: () => { AI.prefer = o.k; renderAIStatus(); } }, o.n)));
+  const note = $('#srcNote'); note.innerHTML = '';
+  if (AI.checking && AI.mode === 'sim') note.textContent = 'Sedang menghubungkan ke GenAI…';
+  else if (AI.mode === 'sim') note.append('GenAI belum terhubung di lingkungan ini, jadi hasil dibuat oleh generator simulasi berbasis aturan teori warna (skema data sama). ', h('button', { class: 'linkbtn', onclick: () => AI.init() }, 'Coba hubungkan ulang'));
+  else note.textContent = AI.mode === 'claude' ? 'Hasil dibuat oleh Claude. Saat pertama kali, browser bisa meminta izin: pilih “Izinkan”.' : 'Hasil dibuat oleh Gemini melalui backend yang aman.';
+}
+function parseJSONLoose(v) {
+  if (v && typeof v === 'object') return v;
+  const s = String(v || ''), a = s.indexOf('{'), b = s.lastIndexOf('}');
+  if (a < 0 || b < a) throw new Error('Respons GenAI tidak berisi JSON');
+  return JSON.parse(s.slice(a, b + 1));
+}
+async function askAI(task, payload, prompt) {
+  if (AI.active === 'claude') return parseJSONLoose(await AI.sample.json(prompt, { modelTier: 'quick' }));
+  const r = await fetch(window.COLORLAB_AI_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ app: 'colorlab', task, ...payload }), redirect: 'follow' });
+  const j = await r.json().catch(() => ({ error: 'HTTP ' + r.status }));
+  if (!r.ok || j.error) throw Object.assign(new Error(j.error || 'HTTP ' + r.status), { code: j.code });
+  return j;
+}
+const withTimeout = (p, ms) => Promise.race([p, new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
+
+/* =========================================================
+   Visual characters + rule-based palette engine (simulation)
+   ========================================================= */
+const CHARS = {
+  tenang: { n: 'Tenang', harm: 'analog', d: 'saturasi rendah–sedang, value terang, hue berdekatan sehingga transisinya lembut' },
+  energik: { n: 'Energik', harm: 'komplementer', d: 'saturasi tinggi dan kontras hue kuat yang memicu perhatian' },
+  mewah: { n: 'Mewah', harm: 'komplementer', d: 'latar gelap yang dalam dengan aksen keemasan dan banyak ruang' },
+  ramah: { n: 'Ramah', harm: 'analog', d: 'warna hangat yang lembut sehingga terasa akrab dan mudah didekati' },
+  profesional: { n: 'Profesional', harm: 'komplementer', d: 'biru/abu-abu yang stabil dengan satu aksen terkendali' },
+  alami: { n: 'Alami', harm: 'analog', d: 'hijau dan coklat tanah dengan saturasi sedang' },
+  playful: { n: 'Playful', harm: 'triadik', d: 'warna cerah yang berjarak jauh pada roda sehingga terasa riang' },
+  minimalis: { n: 'Minimalis', harm: 'monokromatik', d: 'warna netral yang dominan dengan satu aksen tegas' }
+};
+const HARM_SHORT = { analog: 'hue bersebelahan yang terasa harmonis', komplementer: 'hue berseberangan dengan kontras kuat', triadik: 'tiga hue berjarak sama yang seimbang dan hidup', 'split-komplementer': 'satu hue dengan dua tetangga komplemennya, kontras tetapi lebih lembut', monokromatik: 'satu hue dalam beberapa value' };
+const L = (h, s, l) => hslToHex(h, s, l);
+function buildPal(baseHex, harm, ch) {
+  const { h: bh } = hexToHsl(baseHex), r = hueToRyb(bh);
+  const off = { analog: [0, -30, 30], komplementer: [0, 180, 15], triadik: [0, 120, 240], 'split-komplementer': [0, 150, 210], monokromatik: [0, 0, 0] }[harm] || [0, 180, 15];
+  const [H0, H1, H2] = off.map(o => rybToHue(r + o));
+  let p;
+  switch (ch) {
+    case 'tenang': p = { bg: L(H0, .3, .95), dom: L(H0, .35, .55), sec: L(H1, .3, .72), acc: L(H2, .4, .42), text: L(H0, .35, .17) }; break;
+    case 'energik': p = { bg: L(H0, .9, .96), dom: L(H0, .9, .5), sec: L(H2, .85, .55), acc: L(H1, .95, .5), text: '#151515' }; break;
+    case 'mewah': p = { bg: L(H0, .3, .08), dom: L(H0, .45, .27), sec: L(H1, .25, .38), acc: L(45, .65, .55), text: L(45, .45, .9) }; break;
+    case 'ramah': p = { bg: L(H0, .75, .95), dom: L(H0, .75, .68), sec: L(H2, .6, .74), acc: L(H1, .75, .5), text: L(H0, .45, .2) }; break;
+    case 'profesional': p = { bg: L(H0, .12, .97), dom: L(H0, .55, .25), sec: L(H0, .08, .6), acc: L(H1, .75, .47), text: L(H0, .3, .14) }; break;
+    case 'alami': p = { bg: L(40, .35, .93), dom: L(H0, .35, .38), sec: L(30, .35, .45), acc: L(H1, .5, .5), text: L(30, .3, .17) }; break;
+    case 'playful': p = { bg: L(H0, .6, .97), dom: L(H0, .9, .58), sec: L(H1, .85, .55), acc: L(H2, .9, .55), text: '#151515' }; break;
+    default: p = { bg: L(H0, .04, .97), dom: L(0, 0, .86), sec: L(0, 0, .45), acc: L(H0, .78, .5), text: L(0, 0, .1) };
+  }
+  if (contrast(p.bg, p.text) < 4.5) p.text = bestText(p.bg);
+  return p;
+}
+const ROLE = [['bg', 'latar'], ['dom', 'dominan'], ['sec', 'sekunder'], ['acc', 'aksen'], ['text', 'teks']];
+const palToColors = p => ROLE.map(([k, role]) => ({ hex: p[k], role, name: nameOf(p[k]) }));
+const colorsToPal = cs => { const by = r => (cs.find(c => c.role === r) || {}).hex; return { bg: by('latar') || cs[0].hex, dom: by('dominan') || cs[1].hex, sec: by('sekunder') || cs[2].hex, acc: by('aksen') || cs[3].hex, text: by('teks') || (cs[4] ? cs[4].hex : bestText(cs[0].hex)) }; };
+function simPalettes(base, ch) {
+  const first = CHARS[ch].harm;
+  const harms = [first, ...['analog', 'komplementer', 'triadik', 'split-komplementer', 'monokromatik'].filter(x => x !== first).sort(() => Math.random() - .5)].slice(0, 3);
+  return { palettes: harms.map(hm => {
+    const jitter = hslToHex(hexToHsl(base).h + rnd(-8, 8), hexToHsl(base).s, hexToHsl(base).l);
+    const p = buildPal(jitter, hm, ch);
+    return { name: `${nameOf(base).split(' ')[0]} ${CHARS[ch].n} · ${hm}`, harmony: hm, colors: palToColors(p), rationale: `Skema ${hm} dari ${nameOf(base)}: ${HARM_SHORT[hm]}. Untuk karakter ${CHARS[ch].n.toLowerCase()}, palet ini memakai ${CHARS[ch].d}.` };
+  }) };
+}
+const BRIEF_SIM = [
+  { t: 'Poster kelas yoga pagi', title: 'YOGA PAGI', sub: 'Mulai hari dengan tenang', cta: 'Daftar', c: 'tenang' },
+  { t: 'Kartu promosi festival musik', title: 'MUSIC FEST', sub: '3 hari · 20 band', cta: 'Beli tiket', c: 'energik' },
+  { t: 'Undangan peluncuran jam tangan premium', title: 'THE LAUNCH', sub: 'Edisi terbatas', cta: 'RSVP', c: 'mewah' },
+  { t: 'Kartu promosi toko roti keluarga', title: 'ROTI HANGAT', sub: 'Baru keluar dari oven', cta: 'Pesan', c: 'ramah' },
+  { t: 'Brosur layanan konsultan pajak', title: 'KONSULTASI', sub: 'Laporan rapi tanpa cemas', cta: 'Hubungi', c: 'profesional' },
+  { t: 'Label kemasan teh herbal', title: 'TEH HERBAL', sub: 'Dari daun pilihan', cta: 'Coba', c: 'alami' },
+  { t: 'Poster lomba menggambar anak', title: 'AYO GAMBAR!', sub: 'Untuk usia 6–12 tahun', cta: 'Ikut', c: 'playful' },
+  { t: 'Kartu nama studio arsitektur', title: 'STUDIO', sub: 'Ruang · bentuk · cahaya', cta: 'Portofolio', c: 'minimalis' }
+];
+const OPP = { tenang: 'energik', energik: 'tenang', mewah: 'playful', playful: 'mewah', ramah: 'profesional', profesional: 'playful', alami: 'mewah', minimalis: 'playful' };
+const BASE_FOR = { tenang: [8, 7, 6, 9], energik: [0, 1, 2], mewah: [10, 9, 11], ramah: [2, 3, 1], profesional: [8, 9], alami: [6, 5], playful: [0, 4, 8, 2, 10], minimalis: [8, 0, 2, 6] };
+function simScenario(prefChar) {
+  const pool = BRIEF_SIM.filter(b => !S.ai.recent.includes(b.t) && (!prefChar || b.c === prefChar));
+  const b = pick(pool.length ? pool : BRIEF_SIM.filter(x => !prefChar || x.c === prefChar).length ? BRIEF_SIM.filter(x => !prefChar || x.c === prefChar) : BRIEF_SIM);
+  const base = WHEEL[pick(BASE_FOR[b.c])].hex;
+  const good = buildPal(base, CHARS[b.c].harm, b.c);
+  const oc = OPP[b.c], bad1 = buildPal(WHEEL[pick(BASE_FOR[oc])].hex, CHARS[oc].harm, oc);
+  const bad2 = { ...good, text: mixHex(good.bg, good.text, .28) };
+  bad2.dom = good.dom; bad2.acc = mixHex(good.bg, good.acc, .45);
+  const options = [
+    { colors: palToColors(good).map(c => c.hex), why: `Sesuai: ${CHARS[b.c].d}, dan teksnya terbaca (${ratioTxt(contrast(good.bg, good.text))}).` },
+    { colors: palToColors(bad1).map(c => c.hex), why: `Kurang sesuai: palet ini berkarakter ${CHARS[oc].n.toLowerCase()} (${CHARS[oc].d}), berlawanan dengan brief.` },
+    { colors: palToColors(bad2).map(c => c.hex), why: `Hue-nya cocok, tetapi teks terlalu pucat (${ratioTxt(contrast(bad2.bg, bad2.text))}) sehingga sulit dibaca: keterbacaan tetap syarat utama.` }
+  ];
+  return { title: b.title, sub: b.sub, cta: b.cta, brief: `${b.t}. Karakter visual yang diminta: ${CHARS[b.c].n.toLowerCase()}.`, character: CHARS[b.c].n, options, answer: 0, explanation: `Karakter ${CHARS[b.c].n.toLowerCase()} paling didukung oleh ${CHARS[b.c].d}. Selain kesan, periksa selalu kontras teks terhadap latar.` };
+}
+
+/* ---------- validation ---------- */
+const isHex = v => /^#?[0-9a-f]{6}$/i.test(String(v || '').trim());
+const fixHex = v => '#' + String(v).trim().replace('#', '').toUpperCase();
+const clip = (v, n, d = '') => (typeof v === 'string' && v.trim()) ? v.trim().slice(0, n) : d;
+function normPalettes(raw) {
+  const out = (Array.isArray(raw && raw.palettes) ? raw.palettes : []).slice(0, 3).map(p => {
+    const cs = (Array.isArray(p.colors) ? p.colors : []).map(c => typeof c === 'string' ? { hex: c } : c).filter(c => c && isHex(c.hex)).slice(0, 6)
+      .map((c, i) => ({ hex: fixHex(c.hex), name: clip(c.name, 30, ''), role: ['latar', 'dominan', 'sekunder', 'aksen', 'teks'].includes(String(c.role || '').toLowerCase()) ? String(c.role).toLowerCase() : ['latar', 'dominan', 'sekunder', 'aksen', 'teks', 'pendukung'][i] }));
+    cs.forEach(c => { c.name = c.name || nameOf(c.hex); });
+    return { name: clip(p.name, 40, 'Palet'), harmony: clip(p.harmony, 30, ''), colors: cs, rationale: clip(p.rationale, 400, '') };
+  }).filter(p => p.colors.length >= 4);
+  if (!out.length) throw new Error('Palet dari GenAI tidak valid');
+  return { palettes: out };
+}
+function normScenario(raw) {
+  const opts = (Array.isArray(raw.options) ? raw.options : []).slice(0, 3).map(o => ({ colors: (Array.isArray(o.colors) ? o.colors : []).filter(isHex).map(fixHex).slice(0, 5), why: clip(o.why, 300, '') }));
+  if (opts.length !== 3 || opts.some(o => o.colors.length < 4)) throw new Error('Skenario dari GenAI tidak valid');
+  const ans = clamp(Math.round(Number(raw.answer) || 0), 0, 2);
+  return { title: clip(raw.title, 22, 'PROMO').toUpperCase(), sub: clip(raw.sub, 40, ''), cta: clip(raw.cta, 16, 'Lihat'), brief: clip(raw.brief, 300, ''), character: clip(raw.character, 30, ''), options: opts, answer: ans, explanation: clip(raw.explanation, 500, '') };
+}
+function shuffleScenario(sc) {
+  const idx = [0, 1, 2].sort(() => Math.random() - .5);
+  return { ...sc, options: idx.map(i => sc.options[i]), answer: idx.indexOf(sc.answer) };
+}
+function palettePrompt(base, ch) {
+  return `Kamu membantu mahasiswa Desain Komunikasi Visual. Buat 3 palet warna berbeda, masing-masing 5 warna, berdasarkan warna utama ${base} (${nameOf(base)}) dan karakter visual "${CHARS[ch].n}". Setiap palet memakai skema harmoni yang berbeda (pilih dari: analog, komplementer, triadik, split-komplementer, monokromatik). Peran warna: latar, dominan, sekunder, aksen, teks. Pastikan warna teks kontras terhadap latar (rasio WCAG minimal 4.5:1). Jangan memakai unsur budaya lokal. Bahasa Indonesia.
+Balas HANYA JSON: {"palettes":[{"name":"maks 4 kata","harmony":"nama skema","colors":[{"hex":"#RRGGBB","name":"nama warna","role":"latar|dominan|sekunder|aksen|teks"}],"rationale":"2 kalimat: mengapa palet ini cocok dengan karakter ${CHARS[ch].n}"}]}`;
+}
+function scenarioPrompt(ch) {
+  return `Buat 1 latihan penerapan palet warna untuk mahasiswa DKV. Tulis brief desain sederhana (poster atau kartu promosi) dengan karakter visual "${CHARS[ch].n}". Berikan 3 opsi palet, masing-masing 5 warna HEX dengan urutan: latar, dominan, sekunder, aksen, teks. Tepat SATU opsi paling sesuai; dua lainnya kurang sesuai dengan alasan jelas (misalnya karakternya berlawanan, atau kontras teks terhadap latar terlalu rendah). Jangan memakai unsur budaya lokal. Bahasa Indonesia. Hindari mengulang: ${S.ai.recent.slice(-4).join('; ') || '-'}.
+Balas HANYA JSON: {"title":"judul poster maks 3 kata","sub":"subjudul maks 6 kata","cta":"teks tombol maks 2 kata","brief":"1-2 kalimat brief","character":"${CHARS[ch].n}","options":[{"colors":["#RRGGBB","#RRGGBB","#RRGGBB","#RRGGBB","#RRGGBB"],"why":"1 kalimat alasan sesuai/tidak"}],"answer":0,"explanation":"2 kalimat prinsip teori warna yang dipakai"}`;
+}
+
+/* =========================================================
+   AI Lab view
+   ========================================================= */
+let aiStage, aiTab = 'pal', posters = [], aiBase = '#2A71B0', aiChar = 'tenang', curPal = null, curScen = null, scenAnswered = false;
+const PF = { p: null, res: null, ch: null };
+function ensureAI() {
+  if (aiStage) return;
+  aiStage = new Stage($('#aiStage'));
+  aiStage.setBoard('#f6f1ff'); aiStage.setView(12.6, 6.2, .08);
+  posters = [-4.2, 0, 4.2].map((x, i) => {
+    const p = makePoster(3.4, 4.6); p.position.set(x, 0, .1);
+    p.userData.interactive = true; p.userData.onClick = () => posterClick(i);
+    const lbl = labelMesh('ABC'[i], { w: .9, h: .5, size: 90 }); lbl.position.set(x, -2.75, .1);
+    aiStage.add(p, true); aiStage.add(lbl);
+    p.userData.apply({ bg: '#ffffff', dom: '#e6e0f5', sec: '#d6cfe8', acc: '#c4b9e0', text: '#151515', title: 'COLOR LAB', sub: 'Tekan Generate untuk mulai', cta: 'Generate' });
+    return p;
+  });
+  // base color picker
+  const bp = $('#basePick'), bw = $('#baseWheel');
+  bp.value = aiBase.toLowerCase(); bp.oninput = () => { aiBase = bp.value.toUpperCase(); paintBase(); };
+  WHEEL.forEach(w => bw.append(h('button', { title: w.n, style: `background:${w.hex}`, onclick: () => { aiBase = w.hex; bp.value = w.hex.toLowerCase(); paintBase(); } })));
+  const cc = $('#charChips');
+  Object.entries(CHARS).forEach(([k, c]) => cc.append(h('button', { 'data-k': k, 'aria-pressed': String(k === aiChar), onclick: () => { aiChar = k; [...cc.children].forEach(b => b.setAttribute('aria-pressed', String(b.dataset.k === k))); } }, c.n)));
+  $$('#aiTabs button').forEach(b => b.onclick = () => setTab(b.dataset.t));
+  $('#genPal').onclick = genPalettes; $('#genScen').onclick = genScenario; $('#nextScen').onclick = genScenario;
+  paintBase(); renderAIStatus(); setTab('pal');
+}
+function paintBase() { const e = $('#baseInfo'); e.textContent = `${nameOf(aiBase)} · ${aiBase}`; e.style.background = aiBase; e.style.color = bestText(aiBase); }
+function setTab(t) {
+  aiTab = t;
+  $$('#aiTabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
+  $('#tabPal').hidden = t !== 'pal'; $('#tabScen').hidden = t !== 'scen';
+  if (t === 'pal' && curPal) showPalettes(curPal, true);
+  if (t === 'scen' && curScen) showScenarioPosters();
+  if (t === 'scen' && !curScen && AI.active !== 'sim') prefetchScenario();
+}
+function setLoading(on, txt) { $('#aiLoading').classList.toggle('on', on); if (txt) $('#aiLoadingTxt').textContent = txt; }
+function srcTag(source, note) {
+  const s = $('#aiSrc'); s.className = 'src' + (source === 'sim' ? '' : ' ai');
+  s.querySelector('span').textContent = source === 'claude' ? 'Dibuat oleh GenAI · Claude' : source === 'endpoint' ? 'Dibuat oleh GenAI · Gemini' : 'Mode simulasi · generator lokal';
+  $('#aiNote').textContent = note || '';
+}
+
+/* ---------- Palette generator ---------- */
+async function genPalettes() {
+  const b = $('#genPal'); b.disabled = true; setLoading(true, AI.active === 'sim' ? 'Menyusun palet…' : 'GenAI sedang meracik palet…');
+  let res, source = AI.active, note = '';
+  try {
+    if (AI.active === 'sim') { await new Promise(r => setTimeout(r, 350)); res = simPalettes(aiBase, aiChar); }
+    else res = normPalettes(await withTimeout(askAI('palette', { base: aiBase, character: CHARS[aiChar].n }, palettePrompt(aiBase, aiChar)), 25000));
+  } catch (e) {
+    console.warn(e); source = 'sim'; res = simPalettes(aiBase, aiChar);
+    note = 'GenAI tidak merespons tepat waktu, jadi palet ini dibuat oleh generator simulasi.';
+  } finally { setLoading(false); b.disabled = false; }
+  curPal = { ...res, source, note, base: aiBase, ch: aiChar, chosen: -1 };
+  S.ai.palettes++; showPalettes(curPal); renderSteps();
+  $('#specPre').textContent = JSON.stringify({ task: 'palette', source, base: aiBase, character: CHARS[aiChar].n, ...res }, null, 2); $('#specBox').hidden = false;
+}
+function showPalettes(cp, quiet) {
+  srcTag(cp.source, cp.note);
+  $('#aiTitle').textContent = `Palet ${CHARS[cp.ch].n.toLowerCase()} dari ${nameOf(cp.base)}`;
+  $('#aiText').textContent = 'Bandingkan ketiga palet pada poster. Klik poster atau tombol “Pilih” untuk menyimpan palet favoritmu.';
+  posters.forEach((p, i) => {
+    const pal = cp.palettes[i]; p.visible = !!pal; if (!pal) return;
+    p.userData.apply({ ...colorsToPal(pal.colors), title: CHARS[cp.ch].n.toUpperCase(), sub: pal.name, cta: 'Lihat' });
+    if (!quiet) { p.scale.setScalar(.01); setTimeout(() => aiStage.animate(380, k => p.scale.setScalar(Math.max(.01, k))), i * 120); }
+  });
+  const box = $('#palList'); box.innerHTML = '';
+  cp.palettes.forEach((pal, i) => {
+    const P = colorsToPal(pal.colors), cr = contrast(P.bg, P.text), gr = grade(cr);
+    box.append(h('div', { class: 'palcard' + (cp.chosen === i ? ' on' : '') },
+      h('div', { class: 'palhead' }, h('b', {}, `${'ABC'[i]} · ${pal.name}`), pal.harmony ? h('span', { class: 'pill' }, pal.harmony) : ''),
+      h('div', { class: 'strip5' }, pal.colors.map(c => h('div', { title: `${c.name} (${c.role})`, style: `background:${c.hex};color:${bestText(c.hex)}` }, h('small', {}, c.role), h('span', {}, c.hex)))),
+      h('p', { class: 'hint', style: 'margin:6px 0 0' }, pal.rationale),
+      h('div', { class: 'palfoot' }, h('span', { class: 'pill ' + (gr.ok ? 'ok' : 'no') }, `Teks/latar ${ratioTxt(cr)} · ${gr.g}`),
+        h('button', { class: 'btn sm ' + (cp.chosen === i ? 'green' : 'ghost'), onclick: () => posterClick(i) }, cp.chosen === i ? '✓ Dipilih' : 'Pilih'))));
+  });
+}
+function posterClick(i) {
+  if (aiTab === 'scen') return answerScenario(i);
+  if (!curPal || !curPal.palettes[i]) return;
+  curPal.chosen = i;
+  const pal = curPal.palettes[i];
+  if (!S.ai.picked.includes(pal.name)) S.ai.picked.push(pal.name);
+  posters.forEach((p, j) => aiStage.animate(260, k => p.position.z = .1 + (j === i ? .9 : 0) * k));
+  showPalettes(curPal, true); renderMine(); renderSteps();
+  toast(`Palet “${pal.name}” disimpan`, 'ok');
+}
+function renderMine() {
+  const m = $('#mine'); m.innerHTML = '';
+  if (!curPal || curPal.chosen < 0) return;
+  const pal = curPal.palettes[curPal.chosen];
+  m.append(h('span', { class: 'mono' }, 'Palet pilihanmu'), h('div', { class: 'strip5 sm' }, pal.colors.map(c => h('div', { style: `background:${c.hex}`, title: c.hex }))));
+}
+
+/* ---------- Visual scenario ---------- */
+function scenChar() { return pick(Object.keys(CHARS).filter(k => !S.ai.recentChars || !S.ai.recentChars.slice(-2).includes(k))); }
+async function fetchScenario() {
+  const ch = scenChar();
+  if (AI.active === 'sim') return { sc: shuffleScenario(simScenario(ch)), source: 'sim', ch };
+  try { return { sc: shuffleScenario(normScenario(await askAI('scenario', { character: CHARS[ch].n, recent: S.ai.recent.slice(-4) }, scenarioPrompt(ch)))), source: AI.active, ch }; }
+  catch (e) { console.warn(e); return { sc: shuffleScenario(simScenario(ch)), source: 'sim', ch, note: 'GenAI belum siap, jadi skenario ini dibuat oleh generator simulasi.' }; }
+}
+function prefetchScenario() { if (PF.p || AI.active === 'sim') return; const p = fetchScenario().then(r => { if (PF.p === p) PF.res = r; return r; }); PF.p = p; }
+async function genScenario() {
+  const b = $('#genScen'); b.disabled = true;
+  let r;
+  if (AI.active !== 'sim') {
+    prefetchScenario();
+    if (PF.res) r = PF.res;
+    else {
+      setLoading(true, 'GenAI sedang menyusun skenario…');
+      r = await Promise.race([PF.p, new Promise(ok => setTimeout(() => ok(null), 25000))]);
+      if (!r) { const ch = scenChar(); r = { sc: shuffleScenario(simScenario(ch)), source: 'sim', ch, note: 'GenAI masih menyiapkan skenario, jadi skenario ini dibuat oleh simulasi; berikutnya dari GenAI.' }; }
+      else { PF.p = null; PF.res = null; }
+    }
+    if (r === PF.res) { PF.p = null; PF.res = null; }
+  } else { setLoading(true, 'Menyusun skenario…'); await new Promise(x => setTimeout(x, 350)); r = await fetchScenario(); }
+  setLoading(false); b.disabled = false;
+  curScen = { ...r.sc, source: r.source, note: r.note || '' }; scenAnswered = false;
+  (S.ai.recentChars ||= []).push(r.ch); S.ai.recent.push(curScen.brief.slice(0, 60));
+  showScenarioPosters(true);
+  const q = $('#scenBox'); q.hidden = false;
+  $('#scenBrief').textContent = curScen.brief;
+  $('#scenFb').className = 'fb'; $('#scenNext').hidden = true;
+  const opts = $('#scenOpts'); opts.innerHTML = '';
+  curScen.options.forEach((o, i) => opts.append(h('button', { class: 'ans', onclick: () => answerScenario(i) }, h('b', { style: 'width:22px' }, 'ABC'[i]), h('div', { class: 'strip5 sm', style: 'flex:1' }, o.colors.map(c => h('div', { style: `background:${c}` }))))));
+  $('#specPre').textContent = JSON.stringify({ task: 'scenario', source: r.source, ...curScen }, null, 2); $('#specBox').hidden = false;
+  if (AI.active !== 'sim') setTimeout(prefetchScenario, 300);
+}
+function showScenarioPosters(anim) {
+  srcTag(curScen.source, curScen.note);
+  $('#aiTitle').textContent = 'Skenario: ' + (curScen.character ? `karakter ${curScen.character.toLowerCase()}` : 'pilih palet');
+  $('#aiText').textContent = curScen.brief;
+  posters.forEach((p, i) => {
+    const o = curScen.options[i]; p.visible = true;
+    const cs = o.colors.concat([bestText(o.colors[0])]).slice(0, 5);
+    p.userData.apply({ bg: cs[0], dom: cs[1], sec: cs[2], acc: cs[3], text: cs[4], title: curScen.title, sub: curScen.sub, cta: curScen.cta, titleSize: curScen.title.length > 10 ? 76 : 96 });
+    p.position.z = .1;
+    if (anim) { p.scale.setScalar(.01); setTimeout(() => aiStage.animate(380, k => p.scale.setScalar(Math.max(.01, k))), i * 120); }
+  });
+}
+function answerScenario(i) {
+  if (!curScen || scenAnswered) return; scenAnswered = true;
+  const ok = i === curScen.answer;
+  S.ai.scen++; if (ok) S.ai.scenOk++;
+  $$('#scenOpts .ans').forEach((b, j) => { b.disabled = true; if (j === curScen.answer) b.classList.add('right'); else if (j === i) b.classList.add('wrong'); });
+  posters.forEach((p, j) => aiStage.animate(260, k => p.position.z = .1 + (j === curScen.answer ? .9 : 0) * k));
+  const fb = $('#scenFb'); fb.innerHTML = '';
+  fb.append(h('b', {}, ok ? '✓ Tepat!' : `✗ Belum tepat. Palet yang paling sesuai: ${'ABC'[curScen.answer]}.`), h('p', { style: 'margin:4px 0 8px' }, curScen.explanation),
+    h('ul', { class: 'whys' }, curScen.options.map((o, j) => h('li', {}, h('b', {}, 'ABC'[j] + (j === curScen.answer ? ' ✓' : '') + ': '), o.why))));
+  fb.className = 'fb on ' + (ok ? 'ok' : 'no');
+  $('#scenNext').hidden = false;
+  $('#scStat').textContent = `${S.ai.scenOk}/${S.ai.scen} benar`;
+  if (S.ai.scen === 2) toast('Target skenario tercapai (2 soal) ✓', 'ok');
+  renderSteps();
+}
+
+/* =========================================================
+   Evaluation: choose the right color combination for a case
+   ========================================================= */
+const W = i => WHEEL[i].hex;
+const chips = cs => `<span class="qchips">${cs.map(c => `<i style="background:${c}"></i>`).join('')}</span>`;
+const QUIZ = [
+  { k: 'kontras', q: 'Judul poster akan dicetak di atas latar kuning cerah. Warna teks mana yang paling mudah dibaca?',
+    fig: `<div class="qposter" style="background:#F4E500"><b style="color:#151515">BACA</b><b style="color:#FFFFFF">BACA</b><b style="color:#FFF59D">BACA</b><b style="color:#F18E1C">BACA</b></div>`,
+    opts: [['Hitam #151515', ['#151515']], ['Putih #FFFFFF', ['#FFFFFF']], ['Kuning muda #FFF59D', ['#FFF59D']], ['Jingga #F18E1C', ['#F18E1C']]], a: 0,
+    why: () => `Kuning memiliki value sangat tinggi, sehingga hanya teks gelap yang kontras. Hitam ${ratioTxt(contrast('#F4E500', '#151515'))}, putih ${ratioTxt(contrast('#F4E500', '#FFFFFF'))}, jingga ${ratioTxt(contrast('#F4E500', '#F18E1C'))}.` },
+  { k: 'harmoni', q: 'Pada roda warna RYB, apa komplemen dari jingga?',
+    opts: [['Biru', [W(8)]], ['Ungu', [W(10)]], ['Hijau', [W(6)]], ['Merah', [W(0)]]], a: 0,
+    why: () => 'Jingga (sekunder: merah + kuning) berseberangan dengan biru, satu-satunya primer yang tidak dipakai untuk membuatnya.' },
+  { k: 'harmoni', q: 'Manakah skema analog yang berpusat pada biru?',
+    opts: [['Biru-hijau, biru, biru-ungu', [W(7), W(8), W(9)]], ['Biru dan jingga', [W(8), W(2)]], ['Merah, kuning, biru', [W(0), W(4), W(8)]], ['Biru, kuning-hijau, merah-ungu', [W(8), W(5), W(11)]]], a: 0,
+    why: () => 'Analog memakai warna yang bersebelahan pada roda. Biru dan jingga adalah komplementer, sedangkan merah–kuning–biru adalah triadik.' },
+  { k: 'roda', q: 'Warna mana yang termasuk warna tersier?',
+    opts: [['Biru-ungu', [W(9)]], ['Hijau', [W(6)]], ['Kuning', [W(4)]], ['Ungu', [W(10)]]], a: 0,
+    why: () => 'Biru-ungu adalah campuran primer (biru) dengan sekunder di sebelahnya (ungu). Hijau dan ungu adalah sekunder, sedangkan kuning adalah primer.' },
+  { k: 'psikologi', q: 'Aplikasi perbankan ingin terkesan tepercaya dan profesional. Palet mana yang paling sesuai?',
+    opts: [['Navy, abu-abu, putih, aksen hijau', ['#1F3A5F', '#8A93A0', '#F5F7FA', '#2E9E6A']], ['Merah muda neon dan kuning', ['#FF2D95', '#FFE600', '#FF8A00', '#FFFFFF']], ['Hitam, merah, emas', ['#151515', '#C8102E', '#C9A227', '#2B2B2B']], ['Pastel pelangi', ['#FFB3BA', '#FFDFBA', '#FFFFBA', '#BAFFC9']]], a: 0,
+    why: () => 'Biru tua dan abu-abu cenderung diasosiasikan dengan stabilitas dan kepercayaan. Aksen hijau memberi kesan positif tanpa mengganggu. Palet neon atau pastel pelangi memberi kesan main-main.' },
+  { k: 'suhu', q: 'Sebuah situs didominasi biru yang tenang. Warna apa yang paling efektif untuk tombol “Daftar” agar paling menonjol?',
+    opts: [['Jingga', [W(2)]], ['Biru muda', ['#9CC3E6']], ['Biru-ungu', [W(9)]], ['Abu-abu', ['#9E9E9E']]], a: 0,
+    why: () => 'Jingga adalah komplemen biru sekaligus warna hangat. Di atas latar dingin, warna hangat tampak “maju” dan kontras hue-nya paling kuat.' },
+  { k: 'kontras', q: 'Teks merah di atas latar hijau dengan kecerahan (value) yang hampir sama. Apa masalah utamanya?',
+    fig: `<div class="qposter" style="background:hsl(140,60%,38%)"><b style="color:hsl(0,75%,45%)">PROMO HARI INI</b></div>`,
+    opts: [['Kontras value rendah: sulit dibaca, juga bermasalah bagi pengguna buta warna merah-hijau', null], ['Hue keduanya terlalu mirip', null], ['Saturasinya terlalu rendah', null], ['Tidak ada masalah karena keduanya komplementer', null]], a: 0,
+    why: () => `Merah dan hijau memang berseberangan (kontras hue tinggi), tetapi keterbacaan ditentukan oleh value. Rasionya hanya ${ratioTxt(contrast(hslToHex(0, .75, .45), hslToHex(140, .6, .38)))}, jauh di bawah 4,5:1.` }
+];
+let qi = 0, qAns = [], qOrder = [];
+function renderQuiz() {
+  const root = $('#quiz'); root.innerHTML = '';
+  if (S.quiz.done) return renderResult(root);
+  if (!qAns.length && qi === 0) {
+    root.append(h('div', { class: 'qcard' }, h('span', { class: 'stag', style: '--c:var(--purple);--fg:#fff' }, '📝 Tahap 5 · Evaluasi'),
+      h('h2', { style: 'font-size:30px;margin:10px 0' }, 'Pilih kombinasi warna yang tepat'),
+      h('p', { class: 'def' }, `${QUIZ.length} kasus desain, ±3 menit. Setiap jawaban langsung diberi umpan balik beserta alasannya.`),
+      h('div', { class: 'summary', style: 'margin:16px 0' },
+        h('div', { class: 'stat' }, h('b', {}, `${S.visited.size}/5`), h('small', {}, 'materi dieksplorasi')),
+        h('div', { class: 'stat' }, h('b', {}, `${S.missions.size}/5`), h('small', {}, 'misi eksperimen')),
+        h('div', { class: 'stat' }, h('b', {}, `${S.ai.scen}`), h('small', {}, 'skenario AI dijawab'))),
+      h('div', { class: 'row', style: 'margin-top:16px' }, h('button', { class: 'btn yellow', onclick: () => { qAns = []; showQ(); } }, 'Mulai evaluasi →'))));
+    return;
+  }
+  showQ();
+}
+function showQ() {
+  const root = $('#quiz'); root.innerHTML = '';
+  const Q = QUIZ[qi], card = h('div', { class: 'qcard' });
+  if (!qOrder[qi]) qOrder[qi] = [0, 1, 2, 3].sort(() => Math.random() - .5);
+  card.append(h('div', { class: 'qtop' }, h('span', { class: 'mono', style: 'color:var(--muted)' }, `Kasus ${qi + 1} dari ${QUIZ.length}`), h('span', { class: 'stag', style: `--c:${PCOL[Q.k]};--fg:${PFG[Q.k]}` }, NAMES[Q.k])),
+    h('div', { class: 'qbar' }, h('i', { style: `width:${(qi / QUIZ.length) * 100}%` })), h('h3', { style: 'font-size:19px' }, Q.q));
+  if (Q.fig) card.append(h('div', { class: 'qfig', html: Q.fig })); else card.append(h('div', { style: 'height:14px' }));
+  const opts = h('div', { class: 'qopts' }), fb = h('div', { class: 'fb' }), nx = h('div', { class: 'row', style: 'margin-top:14px', hidden: true });
+  qOrder[qi].forEach(oi => {
+    const [label, cs] = Q.opts[oi];
+    opts.append(h('button', { class: 'ans', 'data-i': oi, onclick: () => {
+      const ok = oi === Q.a; qAns[qi] = ok;
+      [...opts.children].forEach(b => { b.disabled = true; const bi = +b.dataset.i; if (bi === Q.a) b.classList.add('right'); else if (bi === oi) b.classList.add('wrong'); });
+      fb.innerHTML = ''; fb.append(h('b', {}, ok ? '✓ Tepat' : `✗ Kurang tepat. Jawaban: ${Q.opts[Q.a][0]}`), Q.why()); fb.className = 'fb on ' + (ok ? 'ok' : 'no');
+      nx.hidden = false;
+    } }, cs ? h('span', { html: chips(cs) }) : '', h('span', { style: 'flex:1' }, label)));
+  });
+  nx.append(h('button', { class: 'btn', onclick: () => { qi++; if (qi >= QUIZ.length) finishQuiz(); else showQ(); } }, qi < QUIZ.length - 1 ? 'Kasus berikutnya →' : 'Lihat hasil →'));
+  card.append(opts, fb, nx); root.append(card);
+}
+function finishQuiz() {
+  S.quiz.done = true; S.quiz.score = qAns.filter(Boolean).length; S.quiz.per = {};
+  QUIZ.forEach((Q, i) => (S.quiz.per[Q.k] ||= []).push(!!qAns[i]));
+  renderSteps(); renderQuiz(); toast('Evaluasi selesai ✓', 'ok');
+}
+function renderResult(root) {
+  const sc = S.quiz.score, pct = Math.round(100 * sc / QUIZ.length);
+  const level = pct >= 85 ? 'Sangat baik' : pct >= 70 ? 'Baik' : pct >= 50 ? 'Cukup' : 'Perlu penguatan';
+  const mins = S.t0 ? Math.max(1, Math.round((Date.now() - S.t0) / 60000)) : 0;
+  const weak = KEYS.filter(k => (S.quiz.per[k] || []).some(v => !v));
+  root.append(h('div', { class: 'qcard result' },
+    h('span', { class: 'stag' }, '🏆 Hasil pemahaman'),
+    h('div', { class: 'score', style: 'margin:12px 0 4px' }, String(sc), h('small', {}, ` / ${QUIZ.length}`)),
+    h('p', { style: 'font-size:18px;margin:0' }, h('b', {}, level), ` · ${pct}%`),
+    h('div', { class: 'rgrid' }, KEYS.map(k => { const arr = S.quiz.per[k] || [], ok = arr.filter(Boolean).length; return h('div', { style: `--c:${PTINT[k]}` }, h('b', {}, NAMES[k]), h('span', {}, arr.length ? `Kasus ${ok}/${arr.length}` : 'Kasus –'), h('br'), h('span', {}, `Misi ${S.missions.has(k) ? '✓' : '–'}`)); })),
+    h('div', { class: 'summary' },
+      h('div', { class: 'stat' }, h('b', {}, `${S.missions.size}/5`), h('small', {}, 'misi eksperimen')),
+      h('div', { class: 'stat' }, h('b', {}, S.ai.scen ? `${S.ai.scenOk}/${S.ai.scen}` : '–'), h('small', {}, 'skenario AI benar')),
+      h('div', { class: 'stat' }, h('b', {}, `${mins} mnt`), h('small', {}, 'waktu belajar (target 15–20)'))),
+    h('p', { class: 'def', style: 'margin-top:18px;text-align:left' }, weak.length ? `Rekomendasi: ulas kembali ${weak.map(k => NAMES[k]).join(', ')}, lalu coba lagi skenario di AI Lab.` : 'Pemahamanmu konsisten. Tantang dirimu dengan skenario AI berikutnya atau buat palet untuk karakter yang belum pernah kamu coba.'),
+    h('div', { class: 'row', style: 'justify-content:center;margin-top:16px' },
+      weak[0] ? h('button', { class: 'btn ghost', onclick: () => { const k = weak[0]; go('room'); openPrinciple(k); } }, `Ulas ${NAMES[weak[0]]}`) : '',
+      h('button', { class: 'btn ghost', onclick: () => go('ai') }, 'AI Lab'),
+      h('button', { class: 'btn', onclick: () => { S.quiz.done = false; qi = 0; qAns = []; qOrder = []; renderQuiz(); renderSteps(); } }, 'Ulangi evaluasi'))));
+}
+
+/* =========================================================
+   Boot
+   ========================================================= */
+function boot() {
+  const tl = $('#tiles');
+  KEYS.forEach((k, i) => tl.append(h('button', { class: 'tile', style: `background:${PCOL[k]};color:${PFG[k]}`, onclick: () => { go('room'); openPrinciple(k); } }, h('span', { html: ICON[k] }), h('span', {}, h('b', {}, NAMES[k]), h('small', {}, `${i + 1} · ${IDN[k]}`)))));
+  $('#startBtn').onclick = () => { startLearning(); go('room'); };
+  $('#arGo').onclick = startScan; $('#arStop').onclick = stopScan;
+  $$('[data-go]').forEach(b => b.addEventListener('click', () => go(b.dataset.go)));
+  $$('[data-modal]').forEach(b => b.addEventListener('click', () => { renderAIStatus(); $('#m-' + b.dataset.modal).classList.add('on'); }));
+  $('#aiChip').onclick = () => { renderAIStatus(); $('#m-ai').classList.add('on'); };
+  $$('.modal').forEach(m => m.addEventListener('click', e => { if (e.target === m || e.target.hasAttribute('data-close')) m.classList.remove('on'); }));
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') $$('.modal.on').forEach(m => m.classList.remove('on')); });
+  renderSteps(); AI.init();
+  const hash = (location.hash || '').slice(1);
+  if (['room', 'ar', 'ai', 'quiz'].includes(hash)) go(hash);
+}
+try {
+  const t = document.createElement('canvas');
+  if (!(t.getContext('webgl2') || t.getContext('webgl'))) throw new Error('WebGL tidak tersedia');
+  Promise.race([Promise.all(["800 40px 'Plus Jakarta Sans'", "600 40px 'Plus Jakarta Sans'"].map(f => document.fonts ? document.fonts.load(f) : 0)), new Promise(r => setTimeout(r, 2500))]).catch(() => {}).then(boot);
+} catch (e) {
+  document.querySelector('main').innerHTML = `<div class="fatal"><h3>Perangkat tidak mendukung WebGL</h3><p>Color Lab membutuhkan WebGL untuk visualisasi 3D. Coba browser Chrome, Edge, Firefox, atau Safari versi terbaru.</p></div>`;
+}
+
+</script>
+</body>
+</html>
